@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 /*
 Connect to the database.
 */
-const mySecret = "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+const mySecret = "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority";
 mongoose.connect(mySecret, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => console.log('MongoDB connected...'))
 .catch(err => console.log(err));
