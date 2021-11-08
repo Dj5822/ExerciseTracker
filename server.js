@@ -58,11 +58,14 @@ app.get('/api/users', (req, res) => {
   /*
   Should get usernames and ids from the database.
   */
+  var output = [];
 
-  res.json({
-    "username": "test username",
-    "_id": "test id"
-  });
+  User.find({}, function(err, users) {
+    users.forEach(function(user) {
+      output.push(user);
+    });
+    res.send(output);
+  })
 });
 
 /*
