@@ -120,6 +120,42 @@ app.post('/api/users/:_id/exercises', (req, res) => {
   }
 });
 
+/*
+Used to get the exercise the logs of any user.
+*/
+app.get('/api/users/:id/logs', (req, res) => {
+  User.findById({ _id: req.params.id }, function(err, user) {
+    if (err) {
+      return console.log(err);
+    }
+    else if (user != null) {
+      var exerciseList = [];
+
+      Exercise.find({ userId: user._id }, (err, exercises) => {
+        exercises.forEach(ex => {
+          if (ex.userId != null) {
+            exerciseList.push({
+              description: ex.description,
+              duration: ex.duration,
+              date: ex.date.toDateString()
+            });
+          }
+        });
+     
+        res.json({
+          _id: user._id,
+          username: user.username,
+          count: exerciseList.length,
+          log: exerciseList
+        });
+      });
+    }
+    else {
+      res.send("Unknown userId");
+    }
+  });
+});
+
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
