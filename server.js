@@ -29,6 +29,17 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 /*
+Create exercise model.
+*/
+const exerciseSchema = new mongoose.Schema({
+  userId: { type: String, required: true},
+  description: { type: String, required: true},
+  duration: { type: Number, required: true},
+  date: Date
+});
+const Exercise = mongoose.model("Exercise", exerciseSchema);
+
+/*
 Used to load the starting webpage.
 */
 app.get('/', (req, res) => {
@@ -65,14 +76,48 @@ app.get('/api/users', (req, res) => {
       output.push(user);
     });
     res.send(output);
-  })
+  });
 });
 
 /*
 Used to post a new exercise.
 */
 app.post('/api/users/:_id/exercises', (req, res) => {
-  console.log(req.body);
+  var exerciseDate = req.body.date;
+
+  if (req.params._id === "" && req.body.description === "" && req.body.duration === "") {
+    res.json({error: "You need to supply the id, description, and duration."});
+  }
+  else {
+    if (exerciseDate === "") {
+      exerciseDate = new Date();
+    }
+    else {
+      exerciseDate = new Date(Date.parse(exerciseDate));
+    }
+
+    var exercise = new Exercise({
+      userId: req.params._id,
+      description: req.body.description,
+      duration: req.body.duration,
+      date: exerciseDate
+    });
+
+    exercise.save();
+
+    User.findById({ _id: req.params._id }, function(err, data) {
+      if (err) return console.log(err);
+      if (data != null) {
+        res.json({
+          _id: data._id,
+          username: data.username,
+          description: exercise.description,
+          duration: exercise.duration,
+          date: exerciseDate.toDateString()
+        });
+      }
+    });    
+  }
 });
 
 
