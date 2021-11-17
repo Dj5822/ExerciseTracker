@@ -124,14 +124,43 @@ app.post('/api/users/:_id/exercises', (req, res) => {
 Used to get the exercise the logs of any user.
 */
 app.get('/api/users/:id/logs', (req, res) => {
-  User.findById({ _id: req.params.id }, function(err, user) {
+  // Used to find the user.
+  var userQuery = User.findById({ _id: req.params.id });
+
+  userQuery.exec((err, user) => {
+    // When an error occurs.
     if (err) {
       return console.log(err);
     }
+    // When a user is found.
     else if (user != null) {
       var exerciseList = [];
 
-      Exercise.find({ userId: user._id }, (err, exercises) => {
+      // Base query.
+      var exerciseQueryValues = { userId: user._id };
+
+      // Optional parameters.
+      if (req.query.from && req.query.to) {
+        exerciseQueryValues.date = { 
+          $gte: new Date(Date.parse(req.query.from)),
+          $lte: new Date(Date.parse(req.query.to)) 
+        };
+      }
+      else if (req.query.from) {
+        exerciseQueryValues.date = { $gte: new Date(Date.parse(req.query.from)) };
+      }
+      else if (req.query.to) {
+        exerciseQueryValues.date = { $lte: new Date(Date.parse(req.query.to))};
+      }
+      
+      var exerciseQuery = Exercise.find(exerciseQueryValues);
+
+      if (req.query.limit) {
+        exerciseQuery.limit(parseInt(req.query.limit, 10));
+      }
+      
+      // Execute the query.
+      exerciseQuery.exec((err, exercises) => {
         exercises.forEach(ex => {
           if (ex.userId != null) {
             exerciseList.push({
@@ -150,6 +179,7 @@ app.get('/api/users/:id/logs', (req, res) => {
         });
       });
     }
+    // When a user is not found.
     else {
       res.send("Unknown userId");
     }
