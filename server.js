@@ -126,18 +126,23 @@ Used to get the exercise the logs of any user.
 app.get('/api/users/:id/logs', (req, res) => {
   // Used to find the user.
   var userQuery = User.findById({ _id: req.params.id });
+  var exerciseQueryValues = {};
+  var userData = {username: "", _id: ""};
 
   userQuery.exec((err, user) => {
     // When an error occurs.
     if (err) {
       return console.log(err);
     }
+    // When a user is not found.
+    else if (user == null) {
+      res.send("Unknown userId");
+    }
     // When a user is found.
-    else if (user != null) {
-      var exerciseList = [];
-
+    else {
       // Base query.
-      var exerciseQueryValues = { userId: user._id };
+      exerciseQueryValues = { userId: user._id };
+      userData = user;
 
       // Optional parameters.
       if (req.query.from && req.query.to) {
@@ -152,37 +157,35 @@ app.get('/api/users/:id/logs', (req, res) => {
       else if (req.query.to) {
         exerciseQueryValues.date = { $lte: new Date(Date.parse(req.query.to))};
       }
-      
-      var exerciseQuery = Exercise.find(exerciseQueryValues);
+    }
+  });
 
-      if (req.query.limit) {
-        exerciseQuery.limit(parseInt(req.query.limit, 10));
+  var exerciseQuery = Exercise.find(exerciseQueryValues);
+
+  if (req.query.limit) {
+    exerciseQuery.limit(parseInt(req.query.limit, 10));
+  }
+
+  // Execute the query.
+  exerciseQuery.exec((err, exercises) => {
+    var exerciseList = [];
+
+    exercises.forEach(ex => {
+      if (ex.userId != null) {
+        exerciseList.push({
+          description: ex.description,
+          duration: ex.duration,
+          date: ex.date.toDateString()
+        });
       }
-      
-      // Execute the query.
-      exerciseQuery.exec((err, exercises) => {
-        exercises.forEach(ex => {
-          if (ex.userId != null) {
-            exerciseList.push({
-              description: ex.description,
-              duration: ex.duration,
-              date: ex.date.toDateString()
-            });
-          }
-        });
-     
-        res.json({
-          _id: user._id,
-          username: user.username,
-          count: exerciseList.length,
-          log: exerciseList
-        });
-      });
-    }
-    // When a user is not found.
-    else {
-      res.send("Unknown userId");
-    }
+    });
+  
+    res.json({
+      _id: userData._id,
+      username: userData.username,
+      count: exerciseList.length,
+      log: exerciseList
+    });
   });
 });
 
