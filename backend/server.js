@@ -6,7 +6,6 @@ import api from "./routes";
 import db from "./config/db";
 
 const app = express();
-require("dotenv").config();
 
 app.use(cors());
 app.use(express.static("public"));
@@ -22,14 +21,9 @@ mongoose
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
 
-// Used to load the starting webpage.
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/views/index.html");
-});
-
 // Setup API endpoints.
 app.use("/api", api);
 
-const listener = app.listen(process.env.PORT || 3000, () => {
+const listener = app.listen(db.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

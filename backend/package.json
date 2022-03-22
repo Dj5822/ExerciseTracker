@@ -1,7 +1,7 @@
 {
 	"name": "exercise-tracker",
 	"version": "0.1.0",
-	"description": "An application to track exercise",
+	"description": "An application to track exercise.",
 	"main": "server.js",
 	"scripts": {
 		"start": "cross-env node -r esm server.js"
@@ -14,7 +14,7 @@
 		"mongoose": "^6.0.12"
 	},
 	"repository": {
-		"url": "https://github.com/freeCodeCamp/boilerplate-project-exercisetracker"
+		"url": "https://github.com/Dj5822/ExerciseTracker"
 	},
 	"license": "MIT",
 	"keywords": [
