@@ -1,30 +1,34 @@
-const cors = require('cors')
-const bodyParser = require('body-parser')
-var mongoose = require('mongoose')
-const express = require('express')
-const app = express()
-require('dotenv').config()
+const cors = require("cors");
+const bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+const express = require("express");
+const app = express();
+require("dotenv").config();
 
-app.use(cors())
-app.use(express.static('public'))
+app.use(cors());
+app.use(express.static("public"));
 
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 /*
 Connect to the database.
 */
-const mySecret = "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority";
-mongoose.connect(mySecret, {useNewUrlParser: true, useUnifiedTopology: true})
-.then(() => console.log('MongoDB connected...'))
-.catch(err => console.log(err));
+const mySecret =
+  "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority";
+mongoose
+  .connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB connected..."))
+  .catch((err) => console.log(err));
 
 /*
 Create user model.
 */
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true}
+  username: { type: String, required: true },
 });
 const User = mongoose.model("User", userSchema);
 
@@ -32,164 +36,154 @@ const User = mongoose.model("User", userSchema);
 Create exercise model.
 */
 const exerciseSchema = new mongoose.Schema({
-  userId: { type: String, required: true},
-  description: { type: String, required: true},
-  duration: { type: Number, required: true},
-  date: Date
+  userId: { type: String, required: true },
+  description: { type: String, required: true },
+  duration: { type: Number, required: true },
+  date: Date,
 });
 const Exercise = mongoose.model("Exercise", exerciseSchema);
 
 /*
 Used to load the starting webpage.
 */
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html')
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/views/index.html");
 });
 
 /*
 Used to create a new user.
 */
-app.post('/api/users', (req, res) => {
+app.post("/api/users", async (req, res) => {
   /*
   Should add the username and id to the database.
   */
-  var user = new User({ username: req.body.username });
-  user.save();
+  var user = await new User({ username: req.body.username });
+  await user.save();
 
   res.json({
-    "username": user.username,
-    "_id": user._id
+    username: user.username,
+    _id: user._id,
   });
 });
 
 /*
 Used to get a list of all the users.
 */
-app.get('/api/users', (req, res) => {
+app.get("/api/users", async (req, res) => {
   /*
   Should get usernames and ids from the database.
   */
-  var output = [];
+  const users = await User.find({});
 
-  User.find({}, function(err, users) {
-    users.forEach(function(user) {
-      output.push(user);
-    });
-    res.send(output);
-  });
+  if (users) {
+    res.send(users);
+  } else {
+    res.send(err);
+  }
 });
 
 /*
 Used to post a new exercise.
 */
-app.post('/api/users/:_id/exercises', (req, res) => {
-  var exerciseDate = req.body.date;
+app.post("/api/users/:_id/exercises", async (req, res) => {
+  if (!req.body.description || !req.body.duration) {
+    res.json({
+      error: "You need to supply the description, and duration.",
+    });
+  } else {
+    var exerciseDate = req.body.date;
 
-  if (req.params._id === "" && req.body.description === "" && req.body.duration === "") {
-    res.json({error: "You need to supply the id, description, and duration."});
-  }
-  else {
-    if (exerciseDate === "") {
+    if (exerciseDate) {
+      exerciseDate = new Date(Date.parse(exerciseDate));
+    } else {
       exerciseDate = new Date();
     }
-    else {
-      exerciseDate = new Date(Date.parse(exerciseDate));
-    }
 
-    var exercise = new Exercise({
+    const exercise = await new Exercise({
       userId: req.params._id,
       description: req.body.description,
       duration: req.body.duration,
-      date: exerciseDate
+      date: exerciseDate,
     });
 
-    exercise.save();
+    await exercise.save();
 
-    User.findById({ _id: req.params._id }, function(err, data) {
-      if (err) return console.log(err);
-      if (data != null) {
+    try {
+      const user = await User.findById({ _id: req.params._id });
+
+      if (user) {
         res.json({
-          _id: data._id,
-          username: data.username,
+          _id: user._id,
+          username: user.username,
           description: exercise.description,
           duration: exercise.duration,
-          date: exerciseDate.toDateString()
+          date: exerciseDate.toDateString(),
         });
+      } else {
+        res.json({ error: "You need to suppy a valid id." });
       }
-    });    
+    } catch (err) {
+      res.json({ error: "You need to suppy a valid id." });
+    }
   }
 });
 
 /*
 Used to get the exercise the logs of any user.
 */
-app.get('/api/users/:id/logs', (req, res) => {
+app.get("/api/users/:id/logs", async (req, res) => {
   // Used to find the user.
-  var userQuery = User.findById({ _id: req.params.id });
-  var exerciseQueryValues = {};
-  var userData = {username: "", _id: ""};
+  try {
+    const user = await User.findById({ _id: req.params.id });
 
-  userQuery.exec((err, user) => {
-    // When an error occurs.
-    if (err) {
-      return console.log(err);
-    }
-    // When a user is not found.
-    else if (user == null) {
-      res.send("Unknown userId");
-    }
-    // When a user is found.
-    else {
+    if (user) {
       // Base query.
-      exerciseQueryValues = { userId: user._id };
-      userData = user;
+      const exerciseQueryValues = { userId: user._id };
 
       // Optional parameters.
       if (req.query.from && req.query.to) {
-        exerciseQueryValues.date = { 
+        exerciseQueryValues.date = {
           $gte: new Date(Date.parse(req.query.from)),
-          $lte: new Date(Date.parse(req.query.to)) 
+          $lte: new Date(Date.parse(req.query.to)),
         };
+      } else if (req.query.from) {
+        exerciseQueryValues.date = {
+          $gte: new Date(Date.parse(req.query.from)),
+        };
+      } else if (req.query.to) {
+        exerciseQueryValues.date = { $lte: new Date(Date.parse(req.query.to)) };
       }
-      else if (req.query.from) {
-        exerciseQueryValues.date = { $gte: new Date(Date.parse(req.query.from)) };
+
+      var exercises;
+
+      // Execute the query.
+      if (req.query.limit) {
+        exercises = await Exercise.find(exerciseQueryValues).limit(
+          parseInt(req.query.limit, 10)
+        );
+      } else {
+        exercises = await Exercise.find(exerciseQueryValues);
       }
-      else if (req.query.to) {
-        exerciseQueryValues.date = { $lte: new Date(Date.parse(req.query.to))};
-      }
+
+      const output = {
+        username: user.username,
+        count: exercises.length,
+        log: exercises.map((exercise) => {
+          return {
+            description: exercise.description,
+            duration: exercise.duration,
+            date: exercise.date,
+          };
+        }),
+      };
+
+      res.json(output);
     }
-  });
-
-  var exerciseQuery = Exercise.find(exerciseQueryValues);
-
-  if (req.query.limit) {
-    exerciseQuery.limit(parseInt(req.query.limit, 10));
+  } catch (err) {
+    res.json({ error: err });
   }
-
-  // Execute the query.
-  exerciseQuery.exec((err, exercises) => {
-    var exerciseList = [];
-
-    exercises.forEach(ex => {
-      if (ex.userId != null) {
-        exerciseList.push({
-          description: ex.description,
-          duration: ex.duration,
-          date: ex.date.toDateString()
-        });
-      }
-    });
-  
-    res.json({
-      _id: userData._id,
-      username: userData.username,
-      count: exerciseList.length,
-      log: exerciseList
-    });
-  });
 });
 
-
 const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log('Your app is listening on port ' + listener.address().port)
-})
+  console.log("Your app is listening on port " + listener.address().port);
+});
