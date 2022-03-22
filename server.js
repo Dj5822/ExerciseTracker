@@ -53,17 +53,21 @@ app.get("/", (req, res) => {
 /*
 Used to create a new user.
 */
-app.post("/api/users", async (req, res) => {
+app.post("/api/users", (req, res) => {
   /*
   Should add the username and id to the database.
   */
-  var user = await new User({ username: req.body.username });
-  await user.save();
+  try {
+    var user = new User({ username: req.body.username });
+    user.save();
 
-  res.json({
-    username: user.username,
-    _id: user._id,
-  });
+    res.json({
+      username: user.username,
+      _id: user._id,
+    });
+  } catch (err) {
+    res.json({ error: err });
+  }
 });
 
 /*
@@ -86,45 +90,45 @@ app.get("/api/users", async (req, res) => {
 Used to post a new exercise.
 */
 app.post("/api/users/:_id/exercises", async (req, res) => {
-  if (!req.body.description || !req.body.duration) {
-    res.json({
-      error: "You need to supply the description, and duration.",
-    });
-  } else {
-    var exerciseDate = req.body.date;
+  try {
+    const user = await User.findById({ _id: req.params._id });
 
-    if (exerciseDate) {
-      exerciseDate = new Date(Date.parse(exerciseDate));
-    } else {
-      exerciseDate = new Date();
-    }
+    if (user) {
+      if (!req.body.description || !req.body.duration) {
+        res.json({
+          error: "You need to supply the description and duration.",
+        });
+      } else {
+        var exerciseDate = req.body.date;
 
-    const exercise = await new Exercise({
-      userId: req.params._id,
-      description: req.body.description,
-      duration: req.body.duration,
-      date: exerciseDate,
-    });
+        if (exerciseDate) {
+          exerciseDate = new Date(Date.parse(exerciseDate));
+        } else {
+          exerciseDate = new Date();
+        }
 
-    await exercise.save();
+        const exercise = await new Exercise({
+          userId: user._id,
+          description: req.body.description,
+          duration: req.body.duration,
+          date: exerciseDate,
+        });
 
-    try {
-      const user = await User.findById({ _id: req.params._id });
+        await exercise.save();
 
-      if (user) {
         res.json({
           _id: user._id,
           username: user.username,
-          description: exercise.description,
-          duration: exercise.duration,
           date: exerciseDate.toDateString(),
+          duration: exercise.duration,
+          description: exercise.description,
         });
-      } else {
-        res.json({ error: "You need to suppy a valid id." });
       }
-    } catch (err) {
+    } else {
       res.json({ error: "You need to suppy a valid id." });
     }
+  } catch (err) {
+    res.json({ error: "You need to suppy a valid id." });
   }
 });
 
@@ -172,7 +176,7 @@ app.get("/api/users/:id/logs", async (req, res) => {
           return {
             description: exercise.description,
             duration: exercise.duration,
-            date: exercise.date,
+            date: exercise.date.toDateString(),
           };
         }),
       };
