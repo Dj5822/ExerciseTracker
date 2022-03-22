@@ -1,1 +1,3 @@
-# [Exercise Tracker](https://www.freecodecamp.org/learn/apis-and-microservices/apis-and-microservices-projects/exercise-tracker)
+# Exercise Tracker
+
+Used to track the amount of exercise that was done.
