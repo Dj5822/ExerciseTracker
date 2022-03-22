@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import express from "express";
 import api from "./routes";
+import db from "./config/db";
 
 const app = express();
 require("dotenv").config();
@@ -18,10 +19,8 @@ app.use(
 /*
 Connect to the database.
 */
-const mySecret =
-  "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority";
 mongoose
-  .connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
 

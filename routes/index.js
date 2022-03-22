@@ -24,8 +24,8 @@ router.post("/users", (req, res) => {
 });
 
 /*
-  Used to get a list of all the users.
-  */
+Used to get a list of all the users.
+*/
 router.get("/users", async (req, res) => {
   /*
     Should get usernames and ids from the database.
@@ -40,8 +40,8 @@ router.get("/users", async (req, res) => {
 });
 
 /*
-  Used to post a new exercise.
-  */
+Used to post a new exercise.
+*/
 router.post("/users/:_id/exercises", async (req, res) => {
   try {
     const user = await User.findById({ _id: req.params._id });
@@ -86,8 +86,8 @@ router.post("/users/:_id/exercises", async (req, res) => {
 });
 
 /*
-  Used to get the exercise the logs of any user.
-  */
+Used to get the exercise the logs of any user.
+*/
 router.get("/users/:id/logs", async (req, res) => {
   // Used to find the user.
   try {
