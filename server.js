@@ -16,21 +16,18 @@ app.use(
   })
 );
 
-/*
-Connect to the database.
-*/
+// Connect to the database.
 mongoose
   .connect(db.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
 
-/*
-Used to load the starting webpage.
-*/
+// Used to load the starting webpage.
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/views/index.html");
 });
 
+// Setup API endpoints.
 app.use("/api", api);
 
 const listener = app.listen(process.env.PORT || 3000, () => {
