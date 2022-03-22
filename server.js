@@ -2,6 +2,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 const express = require("express");
+import { User, Exercise } from "./db/schema";
+
 const app = express();
 require("dotenv").config();
 
@@ -23,25 +25,6 @@ mongoose
   .connect(mySecret, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
-
-/*
-Create user model.
-*/
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true },
-});
-const User = mongoose.model("User", userSchema);
-
-/*
-Create exercise model.
-*/
-const exerciseSchema = new mongoose.Schema({
-  userId: { type: String, required: true },
-  description: { type: String, required: true },
-  duration: { type: Number, required: true },
-  date: Date,
-});
-const Exercise = mongoose.model("Exercise", exerciseSchema);
 
 /*
 Used to load the starting webpage.
