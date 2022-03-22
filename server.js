@@ -1,7 +1,7 @@
-const cors = require("cors");
-const bodyParser = require("body-parser");
-var mongoose = require("mongoose");
-const express = require("express");
+import cors from "cors";
+import bodyParser from "body-parser";
+import mongoose from "mongoose";
+import express from "express";
 import { User, Exercise } from "./db/schema";
 
 const app = express();
