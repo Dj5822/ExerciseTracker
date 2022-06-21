@@ -13,7 +13,7 @@ router.post("/users", (req, res) => {
     const user = new User({ username: username });
     user.save();
 
-    res.json({
+    res.sendStatus(201).json({
       username: user.username,
       _id: user._id,
     });
@@ -43,46 +43,54 @@ router.get("/users", async (req, res) => {
 Used to post a new exercise.
 */
 router.post("/users/:_id/exercises", async (req, res) => {
+  let user;
+  let exercise;
+  let exerciseDate = req.body.date;
+
+  // Check whether user exists.
   try {
-    const user = await User.findById({ _id: req.params._id });
-
-    if (user) {
-      if (!req.body.description || !req.body.duration) {
-        res.json({
-          error: "You need to supply the description and duration.",
-        });
-      } else {
-        var exerciseDate = req.body.date;
-
-        if (exerciseDate) {
-          exerciseDate = new Date(Date.parse(exerciseDate));
-        } else {
-          exerciseDate = new Date();
-        }
-
-        const exercise = await new Exercise({
-          userId: user._id,
-          description: req.body.description,
-          duration: req.body.duration,
-          date: exerciseDate,
-        });
-
-        await exercise.save();
-
-        res.json({
-          _id: user._id,
-          username: user.username,
-          date: exerciseDate.toDateString(),
-          duration: exercise.duration,
-          description: exercise.description,
-        });
-      }
-    } else {
-      res.json({ error: "You need to suppy a valid id." });
-    }
+    user = await User.findById({ _id: req.params._id });
   } catch (err) {
-    res.json({ error: "You need to suppy a valid id." });
+    res.json({ error: "You need to supply a valid user id." });
   }
+  if (!user) res.json({ error: "You need to supply a valid id." });
+
+  // Check whether parameters are not empty.
+  if (!req.body.name || !req.body.quantity) {
+    res.json({error: "You need to supply the name and quantity of the exercise."});
+  }
+    
+  // Get the date of the exercise.
+  if (exerciseDate) {
+    exerciseDate = new Date(Date.parse(exerciseDate));
+  } else {
+    exerciseDate = new Date();
+  }
+
+  // Add new exercise to the database.
+  try {
+    exercise = await new Exercise({
+      userId: user._id,
+      name: req.body.name,
+      quantity: req.body.quantity,
+      date: exerciseDate,
+    });
+  
+    await exercise.save();
+  }
+  catch(err) {
+    res.sendStatus(500);
+  }
+
+  // Send response.
+  res.statusCode = 201;
+  res.json({
+    _id: user._id,
+    userId: user.username,
+    date: exerciseDate.toDateString(),
+    quantity: exercise.quantity,
+    name: exercise.name,
+  });
 });
 
 /*
@@ -127,8 +135,8 @@ router.get("/users/:id/logs", async (req, res) => {
         count: exercises.length,
         log: exercises.map((exercise) => {
           return {
-            description: exercise.description,
-            duration: exercise.duration,
+            name: exercise.name,
+            quantity: exercise.quantity,
             date: exercise.date.toDateString(),
           };
         }),

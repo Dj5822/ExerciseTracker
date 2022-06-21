@@ -3,6 +3,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import express from 'express';
 import router from '../';
 import axios from 'axios';
+import { User, Exercise } from '../../db/schema';
 
 let mongod, server;
 
@@ -81,3 +82,24 @@ it('gets all users successfully', async() => {
         expect(response[i].date).toStrictEqual(exercises[i].date);
     }
 })
+
+it('should able to add a new user successfully', async() => {
+    const response = await axios.post('http://localhost:3000/api/users', {"username": "newUser"});
+
+    expect(response.status).toBe(201);
+
+    const result = await User.find();
+
+    expect(result.length).toBe(4);
+});
+
+it('should able to add a new exercise successfully', async() => {
+    const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
+    {"name": "pushups", "quantity": 100, "date": new Date()});
+
+    expect(response.status).toBe(201);
+
+    const result = await Exercise.find();
+
+    expect(result.length).toBe(6);
+});
