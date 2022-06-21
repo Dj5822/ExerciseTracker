@@ -62,9 +62,47 @@ afterAll(async () => {
 });
 
 it('should get all the users.', async () => {
-    const result =- await User.find();
+    const result = await User.find();
 
     for (var i=0; i<result.length; i++) {
         expect(result[i].username).toBe(users[i].username);
     }
+})
+
+it('should get all the correct user.', async () => {
+    const result = await User.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
+
+    expect(result.username).toBe(users[0].username);
+})
+
+it('should return null for invalid users.', async () => {
+    const result = await User.findById(new mongoose.Types.ObjectId('000000000000000000000009'));
+
+    expect(result).toBeFalsy();
+})
+
+it('should get all the exercises', async () => {
+    const result = await Exercise.find();
+
+    for (var i=0; i<result.length; i++) {
+        expect(result[i].userId).toStrictEqual(String(exercises[i].userId));
+        expect(result[i].name).toBe(exercises[i].name);
+        expect(result[i].quantity).toBe(exercises[i].quantity);
+        expect(result[i].date).toStrictEqual(exercises[i].date);
+    }
+})
+
+it('should get the correct exercise.', async () => {
+    const result = await Exercise.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
+
+    expect(result.userId).toStrictEqual(String(exercises[0].userId));
+    expect(result.name).toBe(exercises[0].name);
+    expect(result.quantity).toBe(exercises[0].quantity);
+    expect(result.date).toStrictEqual(exercises[0].date);
+})
+
+it('should return null for invalid exercises.', async () => {
+    const result = await Exercise.findById(new mongoose.Types.ObjectId('000000000000000000000009'));
+
+    expect(result).toBeFalsy();
 })
