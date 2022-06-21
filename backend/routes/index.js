@@ -8,28 +8,35 @@ Used to create a new user.
 */
 router.post("/users", (req, res) => {
   const username = req.body.username;
+
+  // Check if the username is missing.
+  if (!username) {
+    res.statusCode = 404;
+    res.send("Missing the username field in the request body.")
+  }
   
+  // Add the new user to the database.
   try {
     const user = new User({ username: username });
     user.save();
 
-    res.sendStatus(201).json({
+    // Send response.
+    res.statusCode = 201;
+    res.json({
       username: user.username,
       _id: user._id,
     });
-    
   } catch (err) {
+    res.statusCode = 500;
     res.json({ error: err });
-  }
+  }  
 });
 
 /*
 Used to get a list of all the users.
 */
 router.get("/users", async (req, res) => {
-  /*
-    Should get usernames and ids from the database.
-    */
+  
   const users = await User.find({});
 
   if (users) {

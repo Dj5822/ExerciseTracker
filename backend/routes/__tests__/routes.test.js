@@ -16,7 +16,7 @@ beforeAll(async () => {
     const app = express();
     app.use(express.json());
     app.use('/api', router);
-    server = await app.listen(3000);
+    server = app.listen(3000, () => console.log("test"));
 });
 
 beforeEach(async () => {
@@ -31,7 +31,7 @@ beforeEach(async () => {
 });
 
 afterAll(async () => {
-    server.close(async () => {
+    await server.close(async () => {
         await mongoose.disconnect();
         await mongod.stop();
     });
