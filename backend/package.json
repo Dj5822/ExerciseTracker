@@ -4,10 +4,11 @@
 	"description": "An application to track exercise.",
 	"main": "server.js",
 	"scripts": {
-		"start": "cross-env node -r esm server.js"
+		"start": "cross-env node -r esm server.js",
+		"test": "jest"
 	},
 	"dependencies": {
-		"body-parser": "^1.19.0",
+		"body-parser": "^1.20.0",
 		"cors": "^2.8.5",
 		"dotenv": "^8.6.0",
 		"express": "^4.16.4",
@@ -22,7 +23,12 @@
 		"express"
 	],
 	"devDependencies": {
+		"@babel/core": "^7.18.5",
+		"@babel/preset-env": "^7.18.2",
+		"babel-jest": "^28.1.1",
 		"cross-env": "^7.0.3",
-		"esm": "^3.2.25"
+		"esm": "^3.2.25",
+		"jest": "^28.1.1",
+		"mongodb-memory-server": "^8.7.0"
 	}
 }

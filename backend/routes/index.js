@@ -7,17 +7,17 @@ const router = express.Router();
 Used to create a new user.
 */
 router.post("/users", (req, res) => {
-  /*
-    Should add the username and id to the database.
-    */
+  const username = req.body.username;
+  
   try {
-    var user = new User({ username: req.body.username });
+    const user = new User({ username: username });
     user.save();
 
     res.json({
       username: user.username,
       _id: user._id,
     });
+    
   } catch (err) {
     res.json({ error: err });
   }
