@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import express from 'express';
-import router from '../';
+import router from '..';
 import axios from 'axios';
 import { User, Exercise } from '../../db/schema';
 
