@@ -51,7 +51,6 @@ Used to post a new exercise.
 router.post("/users/:_id/exercises", async (req, res) => {
   let user;
   let exercise;
-  let exerciseDate = req.body.date;
 
   // Check whether user exists.
   try {
@@ -67,13 +66,6 @@ router.post("/users/:_id/exercises", async (req, res) => {
     res.status(400).json({error: "You need to supply the name and quantity of the exercise."});
     return;
   }
-    
-  // Get the date of the exercise.
-  if (exerciseDate) {
-    exerciseDate = new Date(Date.parse(exerciseDate));
-  } else {
-    exerciseDate = new Date();
-  }
 
   // Add new exercise to the database.
   try {
@@ -81,9 +73,8 @@ router.post("/users/:_id/exercises", async (req, res) => {
       userId: user._id,
       name: req.body.name,
       quantity: req.body.quantity,
-      date: exerciseDate,
+      date: req.body.date ? new Date(Date.parse(req.body.date)) : new Date(),
     });
-  
     await exercise.save();
   }
   catch(err) {
@@ -95,7 +86,7 @@ router.post("/users/:_id/exercises", async (req, res) => {
   res.status(201).json({
     _id: user._id,
     userId: user.username,
-    date: exerciseDate.toDateString(),
+    date: exercise.date.toDateString(),
     quantity: exercise.quantity,
     name: exercise.name,
   });
