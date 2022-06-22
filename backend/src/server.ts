@@ -1,11 +1,11 @@
 import cors from "cors";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import express from "express";
+import express, {Express} from "express";
 import api from "./routes";
 import db from "../config/db.json";
 
-const app = express();
+const app: Express = express();
 const port: Number = db.PORT || 3000;
 
 app.use(cors());

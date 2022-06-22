@@ -134,7 +134,12 @@ router.get("/users/:_id/logs", async (req, res) => {
     return;
   }
 
-  let exerciseQueryValues = { userId: user._id };
+  interface ExerciseQueryValues {
+    userId: string,
+    date?: any
+  }
+
+  let exerciseQueryValues : ExerciseQueryValues = { userId: req.params._id };
 
   // Optional parameters.
   if (req.query.from && req.query.to) {
