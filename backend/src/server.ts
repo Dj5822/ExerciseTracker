@@ -3,9 +3,10 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import express from "express";
 import api from "./routes";
-import db from "./config/db";
+import db from "../config/db.json";
 
 const app = express();
+const port: Number = db.PORT || 3000;
 
 app.use(cors());
 app.use(express.static("public"));
@@ -17,13 +18,13 @@ app.use(
 
 // Connect to the database.
 mongoose
-  .connect(db.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db.MONGO_URI)
   .then(() => console.log("MongoDB connected..."))
   .catch((err) => console.log(err));
 
 // Setup API endpoints.
 app.use("/api", api);
 
-const listener = app.listen(db.PORT || 3000, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+app.listen(port, () => {
+  console.log("Your app is listening on port " + String(port));
 });
