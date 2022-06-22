@@ -166,6 +166,60 @@ it('should get exercise logs of a user', async() => {
     }
 })
 
+it('should get exercise logs of a user after a specific date', async() => {
+    const response = await axios.get('http://localhost:3000/api/users/000000000000000000000001/logs?from=2000-12-17');
+
+    expect(response.status).toBe(200);
+    expect(response.data.username).toBe(users[0].username);
+    expect(response.data.count).toBe(3);
+
+    for (var i=0; i<response.data.log.length; i++) {
+        expect(response.data.log[i].name).toBe(exercises[i+2].name);
+        expect(response.data.log[i].quantity).toBe(exercises[i+2].quantity);
+        expect(response.data.log[i].date).toBe(exercises[i+2].date.toDateString());
+    }
+})
+
+it('should get exercise logs of a user before a specific date', async() => {
+    const response = await axios.get('http://localhost:3000/api/users/000000000000000000000001/logs?to=2002-12-17');
+
+    expect(response.status).toBe(200);
+    expect(response.data.username).toBe(users[0].username);
+    expect(response.data.count).toBe(3);
+
+    for (var i=0; i<response.data.log.length; i++) {
+        expect(response.data.log[i].name).toBe(exercises[i].name);
+        expect(response.data.log[i].quantity).toBe(exercises[i].quantity);
+        expect(response.data.log[i].date).toBe(exercises[i].date.toDateString());
+    }
+})
+
+it('should get exercise logs of a user between specific dates', async() => {
+    const response = await axios.get('http://localhost:3000/api/users/000000000000000000000001/logs?from=2000-12-17&to=2002-12-17');
+
+    expect(response.status).toBe(200);
+    expect(response.data.username).toBe(users[0].username);
+    expect(response.data.count).toBe(1);
+
+    expect(response.data.log[0].name).toBe(exercises[2].name);
+    expect(response.data.log[0].quantity).toBe(exercises[2].quantity);
+    expect(response.data.log[0].date).toBe(exercises[2].date.toDateString());
+})
+
+it('should get exercise logs paginated to the limit.', async() => {
+    const response = await axios.get('http://localhost:3000/api/users/000000000000000000000001/logs?limit=3');
+
+    expect(response.status).toBe(200);
+    expect(response.data.username).toBe(users[0].username);
+    expect(response.data.count).toBe(3);
+
+    for (var i=0; i<response.data.log.length; i++) {
+        expect(response.data.log[i].name).toBe(exercises[i].name);
+        expect(response.data.log[i].quantity).toBe(exercises[i].quantity);
+        expect(response.data.log[i].date).toBe(exercises[i].date.toDateString());
+    }
+})
+
 it('should fail to get exercise logs of an non-existent user', async() => {
     try {
         const response = await axios.get('http://localhost:3000/api/users/000000000000000000000009/logs');
