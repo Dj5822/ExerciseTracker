@@ -1,4 +1,5 @@
 import cors from "cors";
+import path from 'path';
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import express, {Express} from "express";
@@ -6,7 +7,7 @@ import api from "./routes";
 import db from "../config/db.json";
 
 const app: Express = express();
-const port: Number = db.PORT || 3000;
+const port: Number = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use(express.static("public"));
@@ -16,15 +17,23 @@ app.use(
   })
 );
 
-// Connect to the database.
-mongoose
-  .connect(db.MONGO_URI)
-  .then(() => console.log("MongoDB connected..."))
-  .catch((err) => console.log(err));
-
-// Setup API endpoints.
+// Setup API routes.
 app.use("/api", api);
 
-app.listen(port, () => {
-  console.log("Your app is listening on port " + String(port));
-});
+// Serve up the frontend's "build" directory, if we're running in production mode.
+if (process.env.NODE_ENV === 'production') {
+  console.log('Running in production!');
+
+  // Make all files in that folder public
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  // If we get any GET request we can't process using one of the server routes, serve up index.html by default.
+  app.get('*', (req, res) => {
+      res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+  });
+}
+
+// Connect to the database.
+mongoose.connect(db.MONGO_URI)
+  .then(() => app.listen(port, () => {console.log(`Your app is listening on port ${port}`)}))
+  .catch((err) => console.log(err));

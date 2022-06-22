@@ -1,4 +1,3 @@
 {
-    "MONGO_URI": "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority",
-    "PORT": 3000
+    "MONGO_URI": "mongodb+srv://dj5822:xjE8yXCkex1da5Ih@cluster0.cdewt.mongodb.net/ExerciseDatabase?retryWrites=true&w=majority"
 }

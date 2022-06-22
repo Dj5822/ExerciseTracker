@@ -4,7 +4,8 @@
 	"description": "An application to track exercise.",
 	"main": "server.js",
 	"scripts": {
-		"start": "cross-env ts-node -r esm ./src/server.ts",
+		"start": "cross-env PORT=3001 ts-node -r esm ./src/server.ts",
+		"production": "cross-env NODE_ENV=production PORT=3000 ts-node -r esm ./src/server.ts",
 		"test": "jest"
 	},
 	"dependencies": {
