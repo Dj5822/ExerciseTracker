@@ -8,29 +8,31 @@ Used to create a new user.
 */
 router.post("/users", (req, res) => {
   const username = req.body.username;
+  let user;
 
   // Check if the username is missing.
   if (!username) {
-    res.sendStatus(404);
-    //res.send("Missing the username field in the request body.")
+    res.statusCode = 404;
+    res.send("Missing the username field in the request body.");
     return;
   }
 
   // Add the new user to the database.
   try {
-    const user = new User({ username: username });
+    user = new User({ username: username });
     user.save();
-
-    // Send response.
-    res.statusCode = 201;
-    res.json({
-      username: user.username,
-      _id: user._id,
-    });
   } catch (err) {
     res.statusCode = 500;
     res.json({ error: err });
+    return;
   }  
+
+  // Send response.
+  res.statusCode = 201;
+  res.json({
+    username: user.username,
+    _id: user._id,
+  });
 });
 
 /*
@@ -59,13 +61,22 @@ router.post("/users/:_id/exercises", async (req, res) => {
   try {
     user = await User.findById({ _id: req.params._id });
   } catch (err) {
+    res.statusCode = 404;
     res.json({ error: "You need to supply a valid user id." });
+    return;
   }
-  if (!user) res.json({ error: "You need to supply a valid id." });
+
+  if (!user) {
+    res.statusCode = 404;
+    res.json({ error: "You need to supply a valid id." });
+    return;
+  }
 
   // Check whether parameters are not empty.
   if (!req.body.name || !req.body.quantity) {
+    res.statusCode = 400;
     res.json({error: "You need to supply the name and quantity of the exercise."});
+    return;
   }
     
   // Get the date of the exercise.
@@ -77,7 +88,7 @@ router.post("/users/:_id/exercises", async (req, res) => {
 
   // Add new exercise to the database.
   try {
-    exercise = await new Exercise({
+    exercise = new Exercise({
       userId: user._id,
       name: req.body.name,
       quantity: req.body.quantity,
@@ -88,6 +99,7 @@ router.post("/users/:_id/exercises", async (req, res) => {
   }
   catch(err) {
     res.sendStatus(500);
+    return;
   }
 
   // Send response.

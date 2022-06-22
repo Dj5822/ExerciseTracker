@@ -72,18 +72,6 @@ const exercises = [
     date: new Date()},
 ]
 
-it('gets all users successfully', async() => {
-    const response = await axios.get('http://localhost:3000/api/users')
-
-    expect(response.status).toBe(200);
-    for (var i=0; i<response.length; i++) {
-        expect(response[i].userId).toStrictEqual(String(exercises[i].userId));
-        expect(response[i].name).toBe(exercises[i].name);
-        expect(response[i].quantity).toBe(exercises[i].quantity);
-        expect(response[i].date).toStrictEqual(exercises[i].date);
-    }
-})
-
 it('should able to add a new user successfully', async() => {
     const response = await axios.post('http://localhost:3000/api/users', {"username": "newUser"});
 
@@ -109,6 +97,18 @@ it('should return 404 when user is created with no username', async() => {
     }
 })
 
+it('gets all users successfully', async() => {
+    const response = await axios.get('http://localhost:3000/api/users')
+
+    expect(response.status).toBe(200);
+    for (var i=0; i<response.length; i++) {
+        expect(response[i].userId).toStrictEqual(String(exercises[i].userId));
+        expect(response[i].name).toBe(exercises[i].name);
+        expect(response[i].quantity).toBe(exercises[i].quantity);
+        expect(response[i].date).toStrictEqual(exercises[i].date);
+    }
+})
+
 it('should able to add a new exercise successfully', async() => {
     const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
     {"name": "pushups", "quantity": 100, "date": new Date()});
@@ -118,4 +118,35 @@ it('should able to add a new exercise successfully', async() => {
     const result = await Exercise.find();
 
     expect(result.length).toBe(6);
+});
+
+it('should fail to add a new exercise when invalid user id is given.', async() => {
+    try {
+        const response = await axios.post('http://localhost:3000/api/users/000000000000000000000009/exercises', 
+        {"name": "pushups", "quantity": 100, "date": new Date()});
+
+        expect(response.status).toBe(404);
+
+        const result = await Exercise.find();
+
+        expect(result.length).toBe(5);
+    }
+    catch (err) {
+        expect(err.code).toBe("ERR_BAD_REQUEST");
+    }
+});
+
+it('should fail to add a new exercise when invalid request body is missing.', async() => {
+    try {
+        const response = await axios.post('http://localhost:3000/api/users/000000000000000000000009/exercises');
+
+        expect(response.status).toBe(400);
+
+        const result = await Exercise.find();
+
+        expect(result.length).toBe(5);
+    }
+    catch (err) {
+        expect(err.code).toBe("ERR_BAD_REQUEST");
+    }
 });
