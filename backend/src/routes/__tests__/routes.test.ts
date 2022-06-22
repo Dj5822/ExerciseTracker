@@ -5,13 +5,14 @@ import router from '..';
 import axios from 'axios';
 import { User, Exercise } from '../../db/schema';
 
-let mongod, server;
+let mongod: any;
+let server: any;
 
 beforeAll(async() => {
     mongod = await MongoMemoryServer.create();
 
     const connectionString = mongod.getUri();
-    await mongoose.connect(connectionString, { useNewUrlParser: true});
+    await mongoose.connect(connectionString);
 
     const app = express();
     app.use(express.json());
@@ -92,13 +93,13 @@ it('should return 404 when user is created with no username', async() => {
 
         expect(result.length).toBe(3);
     }
-    catch (err) {
+    catch (err: any) {
         expect(err.code).toBe("ERR_BAD_REQUEST");
     }
 })
 
 it('gets all users successfully', async() => {
-    const response = await axios.get('http://localhost:3000/api/users')
+    const response: any = await axios.get('http://localhost:3000/api/users')
 
     expect(response.status).toBe(200);
     for (var i=0; i<response.length; i++) {
@@ -131,7 +132,7 @@ it('should fail to add a new exercise when invalid user id is given.', async() =
 
         expect(result.length).toBe(5);
     }
-    catch (err) {
+    catch (err: any) {
         expect(err.code).toBe("ERR_BAD_REQUEST");
     }
 });
@@ -146,7 +147,7 @@ it('should fail to add a new exercise when invalid request body is missing.', as
 
         expect(result.length).toBe(5);
     }
-    catch (err) {
+    catch (err: any) {
         expect(err.code).toBe("ERR_BAD_REQUEST");
     }
 });
@@ -171,7 +172,7 @@ it('should fail to get exercise logs of an non-existent user', async() => {
 
         expect(response.status).toBe(404);
     }
-    catch (err) {
+    catch (err: any) {
         expect(err.code).toBe("ERR_BAD_REQUEST");
     }
 })

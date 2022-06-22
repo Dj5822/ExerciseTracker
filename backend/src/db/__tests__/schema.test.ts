@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { User, Exercise } from '../schema';
 
-let mongod;
+let mongod: any;
 
 beforeAll(async () => {
     mongod = await MongoMemoryServer.create();
 
     const connectionString = mongod.getUri();
-    await mongoose.connect(connectionString, { useNewUrlParser: true});
+    await mongoose.connect(connectionString);
 });
 
 const users = [
@@ -70,7 +70,7 @@ it('should get all the users.', async () => {
 })
 
 it('should get all the correct user.', async () => {
-    const result = await User.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
+    const result: any = await User.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
 
     expect(result.username).toBe(users[0].username);
 })
@@ -93,7 +93,7 @@ it('should get all the exercises', async () => {
 })
 
 it('should get the correct exercise.', async () => {
-    const result = await Exercise.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
+    const result: any = await Exercise.findById(new mongoose.Types.ObjectId('000000000000000000000001'));
 
     expect(result.userId).toStrictEqual(String(exercises[0].userId));
     expect(result.name).toBe(exercises[0].name);
