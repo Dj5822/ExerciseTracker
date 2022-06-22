@@ -111,14 +111,33 @@ it('gets all users successfully', async() => {
 })
 
 it('should able to add a new exercise successfully', async() => {
+    const currentDate = new Date();
     const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
-    {"name": "pushups", "quantity": 100, "date": new Date()});
+    {"name": "pushups", "quantity": 100, "date": currentDate});
 
     expect(response.status).toBe(201);
 
     const result = await Exercise.find();
 
     expect(result.length).toBe(6);
+    expect(result[5].userId).toStrictEqual("000000000000000000000001");
+    expect(result[5].name).toBe("pushups");
+    expect(result[5].quantity).toBe(100);
+    expect(result[5].date).toStrictEqual(currentDate);
+});
+
+it('should able to add a new exercise successfully without the date', async() => {
+    const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
+    {"name": "pushups", "quantity": 100});
+
+    expect(response.status).toBe(201);
+
+    const result = await Exercise.find();
+
+    expect(result.length).toBe(6);
+    expect(result[5].userId).toStrictEqual("000000000000000000000001");
+    expect(result[5].name).toBe("pushups");
+    expect(result[5].quantity).toBe(100);
 });
 
 it('should fail to add a new exercise when invalid user id is given.', async() => {

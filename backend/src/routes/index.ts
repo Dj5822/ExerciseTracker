@@ -56,13 +56,9 @@ router.post("/users/:_id/exercises", async (req, res) => {
   // Check whether user exists.
   try {
     user = await User.findById({ _id: req.params._id });
+    if (!user) throw new Error("No user found.");
   } catch (err) {
     res.status(404).json({ error: "You need to supply a valid user id." });
-    return;
-  }
-
-  if (!user) {
-    res.status(404).json({ error: "You need to supply a valid id." });
     return;
   }
 
@@ -115,13 +111,9 @@ router.get("/users/:_id/logs", async (req, res) => {
   // Used to find the user.
   try {
     user = await User.findById({ _id: req.params._id });
+    if (!user) throw new Error("No user found.");
   } catch (err) {
     res.status(404).json({ error: "You need to supply a valid user id." });
-    return;
-  }
-
-  if (!user) {
-    res.status(404).json({ error: "You need to supply a valid id." });
     return;
   }
 
