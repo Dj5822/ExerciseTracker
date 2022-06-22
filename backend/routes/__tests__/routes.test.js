@@ -7,7 +7,7 @@ import { User, Exercise } from '../../db/schema';
 
 let mongod, server;
 
-beforeAll(async () => {
+beforeAll(async() => {
     mongod = await MongoMemoryServer.create();
 
     const connectionString = mongod.getUri();
@@ -16,11 +16,10 @@ beforeAll(async () => {
     const app = express();
     app.use(express.json());
     app.use('/api', router);
-    server = app.listen(3000, () => console.log("test"));
+    server = app.listen(3000, () => null);
 });
 
 beforeEach(async () => {
-    // clear the database
     await mongoose.connection.db.dropDatabase();
 
     const userCollection = await mongoose.connection.db.createCollection('users');
@@ -30,10 +29,12 @@ beforeEach(async () => {
     await exerciseCollection.insertMany(exercises);
 });
 
-afterAll(async () => {
-    await server.close(async () => {
+afterAll(done => {
+    server.close(async () => {
         await mongoose.disconnect();
         await mongod.stop();
+
+        done();
     });
 });
 
@@ -92,6 +93,21 @@ it('should able to add a new user successfully', async() => {
 
     expect(result.length).toBe(4);
 });
+
+it('should return 404 when user is created with no username', async() => {
+    try {
+        const response = await axios.post('http://localhost:3000/api/users');
+
+        expect(response.status).toBe(404);
+
+        const result = await User.find();
+
+        expect(result.length).toBe(3);
+    }
+    catch (err) {
+        expect(err.code).toBe("ERR_BAD_REQUEST");
+    }
+})
 
 it('should able to add a new exercise successfully', async() => {
     const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 

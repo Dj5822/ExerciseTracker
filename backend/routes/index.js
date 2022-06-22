@@ -11,10 +11,11 @@ router.post("/users", (req, res) => {
 
   // Check if the username is missing.
   if (!username) {
-    res.statusCode = 404;
-    res.send("Missing the username field in the request body.")
+    res.sendStatus(404);
+    //res.send("Missing the username field in the request body.")
+    return;
   }
-  
+
   // Add the new user to the database.
   try {
     const user = new User({ username: username });
