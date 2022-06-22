@@ -46,30 +46,30 @@ const users = [
 
 const exercises = [
     { _id: new mongoose.Types.ObjectId('000000000000000000000001'), 
-    userId: new mongoose.Types.ObjectId('000000000000000000000001'),
+    userId: '000000000000000000000001',
     name: "push ups",
     quantity: 200,
-    date: new Date()},
+    date: new Date('1995-12-17T03:24:00')},
     { _id: new mongoose.Types.ObjectId('000000000000000000000002'), 
-    userId: new mongoose.Types.ObjectId('000000000000000000000001'),
+    userId: '000000000000000000000001',
     name: "pull ups",
     quantity: 100,
-    date: new Date()},
+    date: new Date('1999-12-17T03:24:00')},
     { _id: new mongoose.Types.ObjectId('000000000000000000000003'), 
-    userId: new mongoose.Types.ObjectId('000000000000000000000002'),
+    userId: '000000000000000000000001',
     name: "handstand pushups",
     quantity: 10,
-    date: new Date()},
+    date: new Date('2001-12-17T03:24:00')},
     { _id: new mongoose.Types.ObjectId('000000000000000000000004'), 
-    userId: new mongoose.Types.ObjectId('000000000000000000000002'),
+    userId: '000000000000000000000001',
     name: "muscle up",
     quantity: 10,
-    date: new Date()},
+    date: new Date('2006-12-17T03:24:00')},
     { _id: new mongoose.Types.ObjectId('000000000000000000000005'), 
-    userId: new mongoose.Types.ObjectId('000000000000000000000003'),
+    userId: '000000000000000000000001',
     name: "push ups",
     quantity: 500,
-    date: new Date()},
+    date: new Date('2011-12-17T03:24:00')},
 ]
 
 it('should able to add a new user successfully', async() => {
@@ -150,3 +150,28 @@ it('should fail to add a new exercise when invalid request body is missing.', as
         expect(err.code).toBe("ERR_BAD_REQUEST");
     }
 });
+
+it('should get exercise logs of a user', async() => {
+    const response = await axios.get('http://localhost:3000/api/users/000000000000000000000001/logs');
+
+    expect(response.status).toBe(200);
+    expect(response.data.username).toBe(users[0].username);
+    expect(response.data.count).toBe(5);
+
+    for (var i=0; i<response.data.log.length; i++) {
+        expect(response.data.log[i].name).toBe(exercises[i].name);
+        expect(response.data.log[i].quantity).toBe(exercises[i].quantity);
+        expect(response.data.log[i].date).toBe(exercises[i].date.toDateString());
+    }
+})
+
+it('should fail to get exercise logs of an non-existent user', async() => {
+    try {
+        const response = await axios.get('http://localhost:3000/api/users/000000000000000000000009/logs');
+
+        expect(response.status).toBe(404);
+    }
+    catch (err) {
+        expect(err.code).toBe("ERR_BAD_REQUEST");
+    }
+})

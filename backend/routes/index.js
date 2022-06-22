@@ -39,7 +39,6 @@ router.post("/users", (req, res) => {
 Used to get a list of all the users.
 */
 router.get("/users", async (req, res) => {
-  
   const users = await User.find({});
 
   if (users) {
@@ -116,57 +115,65 @@ router.post("/users/:_id/exercises", async (req, res) => {
 /*
 Used to get the exercise the logs of any user.
 */
-router.get("/users/:id/logs", async (req, res) => {
+router.get("/users/:_id/logs", async (req, res) => {
+  let user;
+  let exercises;
+
   // Used to find the user.
   try {
-    const user = await User.findById({ _id: req.params.id });
-
-    if (user) {
-      // Base query.
-      const exerciseQueryValues = { userId: user._id };
-
-      // Optional parameters.
-      if (req.query.from && req.query.to) {
-        exerciseQueryValues.date = {
-          $gte: new Date(Date.parse(req.query.from)),
-          $lte: new Date(Date.parse(req.query.to)),
-        };
-      } else if (req.query.from) {
-        exerciseQueryValues.date = {
-          $gte: new Date(Date.parse(req.query.from)),
-        };
-      } else if (req.query.to) {
-        exerciseQueryValues.date = { $lte: new Date(Date.parse(req.query.to)) };
-      }
-
-      var exercises;
-
-      // Execute the query.
-      if (req.query.limit) {
-        exercises = await Exercise.find(exerciseQueryValues).limit(
-          parseInt(req.query.limit, 10)
-        );
-      } else {
-        exercises = await Exercise.find(exerciseQueryValues);
-      }
-
-      const output = {
-        username: user.username,
-        count: exercises.length,
-        log: exercises.map((exercise) => {
-          return {
-            name: exercise.name,
-            quantity: exercise.quantity,
-            date: exercise.date.toDateString(),
-          };
-        }),
-      };
-
-      res.json(output);
-    }
+    user = await User.findById({ _id: req.params._id });
   } catch (err) {
-    res.json({ error: err });
+    res.statusCode = 404;
+    res.json({ error: "You need to supply a valid user id." });
+    return;
   }
+
+  if (!user) {
+    res.statusCode = 404;
+    res.json({ error: "You need to supply a valid id." });
+    return;
+  }
+
+  const exerciseQueryValues = { userId: user._id };
+
+  // Optional parameters.
+  if (req.query.from && req.query.to) {
+    exerciseQueryValues.date = {
+      $gte: new Date(Date.parse(req.query.from)),
+      $lte: new Date(Date.parse(req.query.to)),
+    };
+  } else if (req.query.from) {
+    exerciseQueryValues.date = {
+      $gte: new Date(Date.parse(req.query.from)),
+    };
+  } else if (req.query.to) {
+    exerciseQueryValues.date = { 
+      $lte: new Date(Date.parse(req.query.to)),
+    };
+  }
+
+  // Execute the query.
+  if (req.query.limit) {
+    exercises = await Exercise.find(exerciseQueryValues).limit(
+      parseInt(req.query.limit, 10)
+    );
+  } else {
+    exercises = await Exercise.find(exerciseQueryValues);
+  }
+
+  const output = {
+    username: user.username,
+    count: exercises.length,
+    log: exercises.map((exercise) => {
+      return {
+        name: exercise.name,
+        quantity: exercise.quantity,
+        date: exercise.date.toDateString(),
+      };
+    }),
+  };
+
+  res.json(output);
 });
 
 export default router;
