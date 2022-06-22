@@ -6,14 +6,13 @@ const router = express.Router();
 /*
 Used to create a new user.
 */
-router.post("/users", (req, res) => {
+router.post("/users", async (req, res) => {
   const username = req.body.username;
   let user;
 
   // Check if the username is missing.
   if (!username) {
-    res.statusCode = 404;
-    res.send("Missing the username field in the request body.");
+    res.status(404).send("Missing the username field in the request body.");
     return;
   }
 
@@ -22,14 +21,12 @@ router.post("/users", (req, res) => {
     user = new User({ username: username });
     user.save();
   } catch (err) {
-    res.statusCode = 500;
-    res.json({ error: err });
+    res.status(500).json({ error: err });
     return;
   }  
 
   // Send response.
-  res.statusCode = 201;
-  res.json({
+  res.status(201).json({
     username: user.username,
     _id: user._id,
   });
@@ -42,9 +39,9 @@ router.get("/users", async (req, res) => {
   const users = await User.find({});
 
   if (users) {
-    res.send(users);
+    res.status(200).send(users);
   } else {
-    res.send("Could not find user.");
+    res.status(404).send("Could not find users.");
   }
 });
 
@@ -60,21 +57,18 @@ router.post("/users/:_id/exercises", async (req, res) => {
   try {
     user = await User.findById({ _id: req.params._id });
   } catch (err) {
-    res.statusCode = 404;
-    res.json({ error: "You need to supply a valid user id." });
+    res.status(404).json({ error: "You need to supply a valid user id." });
     return;
   }
 
   if (!user) {
-    res.statusCode = 404;
-    res.json({ error: "You need to supply a valid id." });
+    res.status(404).json({ error: "You need to supply a valid id." });
     return;
   }
 
   // Check whether parameters are not empty.
   if (!req.body.name || !req.body.quantity) {
-    res.statusCode = 400;
-    res.json({error: "You need to supply the name and quantity of the exercise."});
+    res.status(400).json({error: "You need to supply the name and quantity of the exercise."});
     return;
   }
     
@@ -97,13 +91,12 @@ router.post("/users/:_id/exercises", async (req, res) => {
     await exercise.save();
   }
   catch(err) {
-    res.sendStatus(500);
+    res.status(500).send("Internal server error.");
     return;
   }
 
   // Send response.
-  res.statusCode = 201;
-  res.json({
+  res.status(201).json({
     _id: user._id,
     userId: user.username,
     date: exerciseDate.toDateString(),
@@ -123,14 +116,12 @@ router.get("/users/:_id/logs", async (req, res) => {
   try {
     user = await User.findById({ _id: req.params._id });
   } catch (err) {
-    res.statusCode = 404;
-    res.json({ error: "You need to supply a valid user id." });
+    res.status(404).json({ error: "You need to supply a valid user id." });
     return;
   }
 
   if (!user) {
-    res.statusCode = 404;
-    res.json({ error: "You need to supply a valid id." });
+    res.status(404).json({ error: "You need to supply a valid id." });
     return;
   }
 
@@ -178,7 +169,7 @@ router.get("/users/:_id/logs", async (req, res) => {
     }),
   };
 
-  res.json(output);
+  res.status(200).json(output);
 });
 
 export default router;
