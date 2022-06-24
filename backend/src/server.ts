@@ -10,12 +10,15 @@ const app: Express = express();
 const port: Number = Number(process.env.PORT) || 3000;
 
 app.use(cors());
-app.use(express.static("public"));
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+
+// Setup JSON parsing for the request body
+app.use(express.json());
+
+// Setup our API routes.
+app.use('/api', api);
+
+// Make the "public" folder available statically
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Setup API routes.
 app.use("/api", api);
