@@ -13,7 +13,7 @@ import Container from '@mui/material/Container';
 import {AppContext} from "../context/AppContextProvider"
 import ExerciseLog from '../components/ExerciseLog';
 
-const Dashboard = () => {
+const Homepage = () => {
   const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -49,7 +49,7 @@ const Dashboard = () => {
                 noWrap
                 sx={{ flexGrow: 1 }}
             >
-                Dashboard
+                Home
             </Typography>
             </Toolbar>
         </AppBar>
@@ -73,13 +73,13 @@ const Dashboard = () => {
                 <ListItemIcon>
                     <DashboardIcon />
                 </ListItemIcon>
-                <ListItemText primary="Dashboard" />
+                <ListItemText primary="Home" />
                 </ListItemButton>
                 <ListItemButton>
                 <ListItemIcon>
                     <BarChartIcon />
                 </ListItemIcon>
-                <ListItemText primary="Reports" />
+                <ListItemText primary="Data" />
                 </ListItemButton>
             </List>
         </Drawer>
@@ -96,12 +96,10 @@ const Dashboard = () => {
             }}
         >
             <Container maxWidth="lg" sx={{ mt: 16, mb: 4 }}>
-                <Card sx={{ mt: 8, p: 2}}>
-                    {isLoading ? <CircularProgress /> : <ExerciseLog /> }       
-                </Card>
+                {isLoading ? <CircularProgress /> : <ExerciseLog />}
             </Container>
         </Box>
     </Box>
 }
 
-export default Dashboard;
+export default Homepage;

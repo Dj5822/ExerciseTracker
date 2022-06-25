@@ -1,9 +1,9 @@
 import React from 'react';
-import Dashboard from './pages/Dashboard';
+import Homepage from './pages/Homepage';
 
 function App() {
     return (
-    <Dashboard />
+    <Homepage />
     );
 }
 

@@ -1,4 +1,4 @@
-import { Typography, Container } from "@mui/material";
+import { Typography, Container, Card } from "@mui/material";
 import { useContext } from "react";
 import {AppContext} from "../context/AppContextProvider"
 
@@ -12,12 +12,12 @@ const ExerciseLog = () => {
     const { exerciseData } = useContext(AppContext);
 
     return (
-        <Container>
+        <Card sx={{ mt: 8, p: 2}}>
             <Typography variant="h5">Exercise Logs</Typography>
             <p>{exerciseData.username}</p>
             <p>{exerciseData.count}</p>
-            {exerciseData.log.map((exercise: Exercise) => <p>{exercise.name}</p>)}    
-        </Container>
+            {exerciseData.log.map((exercise: Exercise) => <p>{exercise.name}</p>)}               
+        </Card>
     )
 }
 
