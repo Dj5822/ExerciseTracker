@@ -27,12 +27,12 @@ const RecordExercisePanel = () => {
                 <Typography sx={{mt: 2}}>
                     Quantity:
                 </Typography>
-                <TextField id="outlined-basic" label="Outlined" variant="outlined" 
+                <TextField id="outlined-basic" label="Enter a number" variant="outlined" 
                 onChange={(event: any) => setQuantity(event.target.value)} />
                 <Typography sx={{mt: 2}}>
-                    Date (yyyy-mm-dd):
+                    Date:
                 </Typography>
-                <TextField id="outlined-basic" label="Outlined" variant="outlined" 
+                <TextField id="outlined-basic" label="yyyy-mm-dd" variant="outlined" 
                 onChange={(event: any) => setDate(event.target.value)} />
                 <Button sx={{mt: 2}} onClick={recordExercise} variant="contained">
                     Add
