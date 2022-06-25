@@ -7,12 +7,14 @@ const RecordExercisePanel = () => {
     const [selectedExercise, setSelectedExercise] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [date, setDate] = useState(new Date());
-    const {userData, exerciseTypes} = useContext(AppContext);
+    const {userData, exerciseTypes, addToExerciseLog} = useContext(AppContext);
 
     const recordExercise = async () => {
         const response = await axios.post(`http://localhost:3000/api/users/${userData._id}/exercises`, 
         {"name": selectedExercise, "quantity": quantity, "date": date});
-        console.log(response);
+        if (response) {
+            addToExerciseLog({"name": selectedExercise, "quantity": quantity, "date": response.data.date});
+        }
     }
 
     return (

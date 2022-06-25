@@ -20,7 +20,7 @@ const ExerciseLog = () => {
             <p>Records:</p>
             {exerciseData.log.map((exercise: Exercise) => {
                 count += 1
-                return <div key={count}>{exercise.quantity} {exercise.name}</div>
+                return <div key={count}>{String(exercise.date)} - {exercise.quantity} {exercise.name}</div>
                 })}               
         </Card>
     )

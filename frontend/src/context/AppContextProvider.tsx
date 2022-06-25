@@ -26,7 +26,8 @@ interface Context {
     userData: User,
     exerciseData: ExerciseLogs,
     isLoading: boolean,
-    exerciseTypes: Object[]
+    exerciseTypes: Object[],
+    addToExerciseLog: any
 }
 
 export const AppContext : any = React.createContext({});
@@ -52,11 +53,15 @@ export const AppContextProvider = ({ children }: Props) => {
         
     }, [userData._id]);
 
+    const addToExerciseLog = (exercise: Exercise) => setExerciseData({username: exerciseData.username, count: exerciseData.count, 
+        log: [...exerciseData.log, {name: exercise.name, quantity: exercise.quantity, date: exercise.date}]});
+
     const context : Context = {
         userData,
         exerciseData,
         isLoading,
-        exerciseTypes
+        exerciseTypes,
+        addToExerciseLog
     }
 
     return (
