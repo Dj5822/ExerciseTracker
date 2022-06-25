@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, Divider, IconButton, List, Toolbar, Typography, Card } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -10,18 +10,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '../components/AppBar';
 import Drawer from '../components/Drawer';
 import Container from '@mui/material/Container';
-import axios from 'axios';
+import {AppContext} from "../context/AppContextProvider"
 
 interface Exercise {
     name: string,
     quantity: number,
     date: Date
-}
-
-interface ExerciseLogs {
-    username: string,
-    count: number,
-    log: Exercise[]
 }
 
 const Dashboard = () => {
@@ -31,20 +25,7 @@ const Dashboard = () => {
         
     };
 
-    const [userList, setUserList] = useState<any[]>([]);
-    const [currentUserId, setCurrentUserId] = useState<String>("");
-    const [exerciseLogs, setExerciseLogs] = useState<ExerciseLogs>({username: "none", count: 0, log: []});
-
-    useEffect(() => {
-      async function fetchData() {
-        const response = await axios.get("/api/users");
-        setUserList(response.data);
-        setCurrentUserId(response.data[0]._id);
-        const logs = await axios.get(`/api/users/${currentUserId}/logs`);
-        setExerciseLogs(logs.data);
-      }
-      fetchData();
-    }, [currentUserId]);
+    const { exerciseData } = useContext(AppContext);
 
     return <Box sx={{ display: 'flex' }}>
         <AppBar position="absolute" open={open}>
@@ -117,15 +98,11 @@ const Dashboard = () => {
             }}
         >
             <Container maxWidth="lg" sx={{ mt: 16, mb: 4 }}>
-                <Card>
-                    <Typography variant="h5">UserList</Typography>
-                    {userList.map(user => <li key={user._id}>{user.username}</li>)}
-                </Card>
                 <Card sx={{ mt: 8}}>
                     <Typography variant="h5">Exercise Logs</Typography>
-                    <p>{exerciseLogs.username}</p>
-                    <p>{exerciseLogs.count}</p>
-                    {exerciseLogs.log.map(exercise => <p>{exercise.name}</p>)}           
+                    <p>{exerciseData.username}</p>
+                    <p>{exerciseData.count}</p>
+                    {exerciseData.log.map((exercise: Exercise) => <p>{exercise.name}</p>)}           
                 </Card>
             </Container>
         </Box>
