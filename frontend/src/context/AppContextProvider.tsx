@@ -24,7 +24,8 @@ interface ExerciseLogs {
 
 interface Context {
     userData: User,
-    exerciseData: ExerciseLogs
+    exerciseData: ExerciseLogs,
+    isLoading: boolean,
 }
 
 export const AppContext : any = React.createContext({});
@@ -32,14 +33,17 @@ export const AppContext : any = React.createContext({});
 export const AppContextProvider = ({ children }: Props) => {
     const [userData, setUserData] = useState<User>({_id:"0", username: "none"});
     const [exerciseData, setExerciseData] = useState<ExerciseLogs>({username: "none", count: 0, log: []});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchData() {
+            setIsLoading(true);
             const newUserData = await axios.get("/api/users");
             // Select the first user.
             setUserData(newUserData.data[0]);
             const newExerciseData = await axios.get(`/api/users/${userData._id}/logs`);
             setExerciseData(newExerciseData.data);
+            setIsLoading(false);
         }
 
         fetchData();
@@ -48,7 +52,8 @@ export const AppContextProvider = ({ children }: Props) => {
 
     const context : Context = {
         userData,
-        exerciseData
+        exerciseData,
+        isLoading
     }
 
     return (

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Divider, IconButton, List, Toolbar, Typography, Card } from '@mui/material';
+import { Box, Divider, IconButton, List, Toolbar, Typography, Card, CircularProgress } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -11,12 +11,7 @@ import AppBar from '../components/AppBar';
 import Drawer from '../components/Drawer';
 import Container from '@mui/material/Container';
 import {AppContext} from "../context/AppContextProvider"
-
-interface Exercise {
-    name: string,
-    quantity: number,
-    date: Date
-}
+import ExerciseLog from '../components/ExerciseLog';
 
 const Dashboard = () => {
   const [open, setOpen] = useState(true);
@@ -25,9 +20,10 @@ const Dashboard = () => {
         
     };
 
-    const { exerciseData } = useContext(AppContext);
+    const { isLoading } = useContext(AppContext);
 
     return <Box sx={{ display: 'flex' }}>
+
         <AppBar position="absolute" open={open}>
             <Toolbar
             sx={{
@@ -57,6 +53,7 @@ const Dashboard = () => {
             </Typography>
             </Toolbar>
         </AppBar>
+
         <Drawer variant="permanent" open={open}>
             <Toolbar
                 sx={{
@@ -86,6 +83,7 @@ const Dashboard = () => {
                 </ListItemButton>
             </List>
         </Drawer>
+        
         <Box component="main"
         sx={{
             backgroundColor: (theme) =>
@@ -98,11 +96,8 @@ const Dashboard = () => {
             }}
         >
             <Container maxWidth="lg" sx={{ mt: 16, mb: 4 }}>
-                <Card sx={{ mt: 8}}>
-                    <Typography variant="h5">Exercise Logs</Typography>
-                    <p>{exerciseData.username}</p>
-                    <p>{exerciseData.count}</p>
-                    {exerciseData.log.map((exercise: Exercise) => <p>{exercise.name}</p>)}           
+                <Card sx={{ mt: 8, p: 2}}>
+                    {isLoading ? <CircularProgress /> : <ExerciseLog /> }       
                 </Card>
             </Container>
         </Box>
