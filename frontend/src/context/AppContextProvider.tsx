@@ -26,6 +26,7 @@ interface Context {
     userData: User,
     exerciseData: ExerciseLogs,
     isLoading: boolean,
+    exerciseTypes: Object[]
 }
 
 export const AppContext : any = React.createContext({});
@@ -34,6 +35,7 @@ export const AppContextProvider = ({ children }: Props) => {
     const [userData, setUserData] = useState<User>({_id:"0", username: "none"});
     const [exerciseData, setExerciseData] = useState<ExerciseLogs>({username: "none", count: 0, log: []});
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const exerciseTypes = [{name: "Push ups", unit: ""}, {name: "Pull ups", unit: ""}]
 
     useEffect(() => {
         async function fetchData() {
@@ -53,7 +55,8 @@ export const AppContextProvider = ({ children }: Props) => {
     const context : Context = {
         userData,
         exerciseData,
-        isLoading
+        isLoading,
+        exerciseTypes
     }
 
     return (

@@ -12,6 +12,7 @@ import Drawer from '../components/Drawer';
 import Container from '@mui/material/Container';
 import {AppContext} from "../context/AppContextProvider"
 import ExerciseLog from '../components/ExerciseLog';
+import RecordExercisePanel from '../components/RecordExercisePanel';
 
 const Homepage = () => {
   const [open, setOpen] = useState(true);
@@ -96,7 +97,11 @@ const Homepage = () => {
             }}
         >
             <Container maxWidth="lg" sx={{ mt: 16, mb: 4 }}>
-                {isLoading ? <CircularProgress /> : <ExerciseLog />}
+                {isLoading ? <CircularProgress /> : 
+                <div>
+                    <ExerciseLog />
+                    <RecordExercisePanel />
+                </div>}
             </Container>
         </Box>
     </Box>
