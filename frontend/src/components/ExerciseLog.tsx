@@ -10,13 +10,18 @@ interface Exercise {
 
 const ExerciseLog = () => {
     const { exerciseData } = useContext(AppContext);
+    let count = 0;
 
     return (
         <Card sx={{ mt: 8, p: 2}}>
             <Typography variant="h5">Exercise Logs</Typography>
-            <p>{exerciseData.username}</p>
-            <p>{exerciseData.count}</p>
-            {exerciseData.log.map((exercise: Exercise) => <p>{exercise.name}</p>)}               
+            <p>Username: {exerciseData.username}</p>
+            <p>Count: {exerciseData.count}</p>
+            <p>Records:</p>
+            {exerciseData.log.map((exercise: Exercise) => {
+                count += 1
+                return <div key={count}>{exercise.quantity} {exercise.name}</div>
+                })}               
         </Card>
     )
 }

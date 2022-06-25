@@ -99,8 +99,8 @@ const Homepage = () => {
             <Container maxWidth="lg" sx={{ mt: 16, mb: 4 }}>
                 {isLoading ? <CircularProgress /> : 
                 <div>
-                    <ExerciseLog />
                     <RecordExercisePanel />
+                    <ExerciseLog />
                 </div>}
             </Container>
         </Box>

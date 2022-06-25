@@ -1,4 +1,5 @@
 import { Container, MenuItem, Select, Typography, TextField, Button, Card } from "@mui/material";
+import axios from "axios";
 import { useContext, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
 
@@ -6,12 +7,12 @@ const RecordExercisePanel = () => {
     const [selectedExercise, setSelectedExercise] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [date, setDate] = useState(new Date());
-    const {exerciseTypes} = useContext(AppContext);
+    const {userData, exerciseTypes} = useContext(AppContext);
 
-    const recordExercise = () => {
-        console.log(selectedExercise);
-        console.log(quantity);
-        console.log(date);
+    const recordExercise = async () => {
+        const response = await axios.post(`http://localhost:3000/api/users/${userData._id}/exercises`, 
+        {"name": selectedExercise, "quantity": quantity, "date": date});
+        console.log(response);
     }
 
     return (
