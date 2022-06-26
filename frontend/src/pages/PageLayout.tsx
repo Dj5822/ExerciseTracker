@@ -47,7 +47,7 @@ export default function PageLayout() {
                     noWrap
                     sx={{ flexGrow: 1 }}
                 >
-                    Home
+                    Exercise Tracker
                 </Typography>
                 </Toolbar>
             </AppBar>
