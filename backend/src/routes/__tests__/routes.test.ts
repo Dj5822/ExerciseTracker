@@ -71,9 +71,24 @@ const exercises = [
     name: "push ups",
     quantity: 500,
     date: new Date('2011-12-17T03:24:00')},
+    { _id: new mongoose.Types.ObjectId('000000000000000000000006'), 
+    userId: '000000000000000000000001',
+    name: "push ups",
+    quantity: 20,
+    date: new Date('2011-11-17T03:24:00')},
+    { _id: new mongoose.Types.ObjectId('000000000000000000000007'), 
+    userId: '000000000000000000000001',
+    name: "push ups",
+    quantity: 50,
+    date: new Date('2011-12-07T03:24:00')},
+    { _id: new mongoose.Types.ObjectId('000000000000000000000008'), 
+    userId: '000000000000000000000001',
+    name: "push ups",
+    quantity: 90,
+    date: new Date('2011-12-27T03:24:00')},
 ]
 
-it('should able to add a new user successfully', async() => {
+it('should be able to add a new user successfully', async() => {
     const response = await axios.post('http://localhost:3000/api/users', {"username": "newUser"});
 
     expect(response.status).toBe(201);
@@ -113,31 +128,31 @@ it('gets all users successfully', async() => {
 it('should able to add a new exercise successfully', async() => {
     const currentDate = new Date();
     const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
-    {"name": "pushups", "quantity": 100, "date": currentDate});
+    {"name": "random exercise", "quantity": 100, "date": currentDate});
 
     expect(response.status).toBe(201);
 
     const result = await Exercise.find();
 
-    expect(result.length).toBe(6);
-    expect(result[5].userId).toStrictEqual("000000000000000000000001");
-    expect(result[5].name).toBe("pushups");
-    expect(result[5].quantity).toBe(100);
-    expect(result[5].date).toStrictEqual(currentDate);
+    expect(result.length).toBe(9);
+    expect(result[8].userId).toStrictEqual("000000000000000000000001");
+    expect(result[8].name).toBe("random exercise");
+    expect(result[8].quantity).toBe(100);
+    expect(result[8].date).toStrictEqual(currentDate);
 });
 
 it('should able to add a new exercise successfully without the date', async() => {
     const response = await axios.post('http://localhost:3000/api/users/000000000000000000000001/exercises', 
-    {"name": "pushups", "quantity": 100});
+    {"name": "ex new", "quantity": 100});
 
     expect(response.status).toBe(201);
 
     const result = await Exercise.find();
 
-    expect(result.length).toBe(6);
-    expect(result[5].userId).toStrictEqual("000000000000000000000001");
-    expect(result[5].name).toBe("pushups");
-    expect(result[5].quantity).toBe(100);
+    expect(result.length).toBe(9);
+    expect(result[8].userId).toStrictEqual("000000000000000000000001");
+    expect(result[8].name).toBe("ex new");
+    expect(result[8].quantity).toBe(100);
 });
 
 it('should fail to add a new exercise when invalid user id is given.', async() => {
@@ -176,7 +191,7 @@ it('should get exercise logs of a user', async() => {
 
     expect(response.status).toBe(200);
     expect(response.data.username).toBe(users[0].username);
-    expect(response.data.count).toBe(5);
+    expect(response.data.count).toBe(8);
 
     for (var i=0; i<response.data.log.length; i++) {
         expect(response.data.log[i].name).toBe(exercises[i].name);
@@ -190,7 +205,7 @@ it('should get exercise logs of a user after a specific date', async() => {
 
     expect(response.status).toBe(200);
     expect(response.data.username).toBe(users[0].username);
-    expect(response.data.count).toBe(3);
+    expect(response.data.count).toBe(6);
 
     for (var i=0; i<response.data.log.length; i++) {
         expect(response.data.log[i].name).toBe(exercises[i+2].name);
