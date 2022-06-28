@@ -198,7 +198,7 @@ router.get("/users/:_id/stats", async (req, res) => {
         exercises: { $push: { name: "$_id.exercise", total: "$total"}}
       }
     }
-  ]).sort({"date": -1});
+  ]).sort({"_id": 1});
 
   const monthlyStats = await Exercise.aggregate([
     {
@@ -216,7 +216,7 @@ router.get("/users/:_id/stats", async (req, res) => {
         exercises: { $push: { name: "$_id.exercise", total: "$total"}}
       }
     }
-  ]).sort({"date": -1});
+  ]).sort({"_id": 1});
 
   const yearlyStats = await Exercise.aggregate([
     {
@@ -234,7 +234,7 @@ router.get("/users/:_id/stats", async (req, res) => {
         exercises: { $push: { name: "$_id.exercise", total: "$total"}}
       }
     }
-  ]).sort({"date": -1});
+  ]).sort({"_id": 1});
 
   const output = {
     username: user.username,
