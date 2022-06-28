@@ -8,7 +8,17 @@ import { AppContext } from "../context/AppContextProvider";
 const Datapage = () => {
     const { exerciseData } = useContext(AppContext);
 
-    const data = exerciseData.log;
+    const data: any = exerciseData.daily.map((item: any) => {
+        let output: any = {
+            date: item._id
+        }
+
+        for (const exercise of item.exercises) {
+            output[exercise.name] = exercise.total;
+        }
+
+        return output;
+    });
 
     return (
         <ResponsiveContainer width="95%" height="95%">
@@ -28,7 +38,8 @@ const Datapage = () => {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="quantity" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line connectNulls type="monotone" dataKey="Push ups" stroke="#8884d8" activeDot={{ r: 8 }} />
+                <Line connectNulls type="monotone" dataKey="Pull ups" stroke="#82ca9d" />
             </LineChart>
         </ResponsiveContainer>
     );

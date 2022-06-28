@@ -24,7 +24,8 @@ interface ExerciseLogs {
 
 interface Context {
     userData: User,
-    exerciseData: ExerciseLogs,
+    exerciseLog: ExerciseLogs,
+    exerciseData: Object,
     isLoading: boolean,
     exerciseTypes: Object[],
     addToExerciseLog: any
@@ -34,7 +35,8 @@ export const AppContext : any = React.createContext({});
 
 export const AppContextProvider = ({ children }: Props) => {
     const [userData, setUserData] = useState<User>({_id:"0", username: "none"});
-    const [exerciseData, setExerciseData] = useState<ExerciseLogs>({username: "none", count: 0, log: []});
+    const [exerciseLog, setExerciseLog] = useState<ExerciseLogs>({username: "none", count: 0, log: []});
+    const [exerciseData, setExerciseData] = useState({});
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const exerciseTypes = [{name: "Push ups", unit: ""}, {name: "Pull ups", unit: ""}]
 
@@ -44,7 +46,9 @@ export const AppContextProvider = ({ children }: Props) => {
             const newUserData = await axios.get("/api/users");
             // Select the first user.
             setUserData(newUserData.data[0]);
-            const newExerciseData = await axios.get(`/api/users/${userData._id}/logs`);
+            const newExerciseLog = await axios.get(`/api/users/${userData._id}/logs?limit=5`);
+            setExerciseLog(newExerciseLog.data);
+            const newExerciseData = await axios.get(`/api/users/${userData._id}/stats`);
             setExerciseData(newExerciseData.data);
             setIsLoading(false);
         }
@@ -53,11 +57,12 @@ export const AppContextProvider = ({ children }: Props) => {
         
     }, [userData._id]);
 
-    const addToExerciseLog = (exercise: Exercise) => setExerciseData({username: exerciseData.username, count: exerciseData.count, 
-        log: [...exerciseData.log, {name: exercise.name, quantity: exercise.quantity, date: exercise.date}]});
+    const addToExerciseLog = (exercise: Exercise) => setExerciseLog({username: exerciseLog.username, count: exerciseLog.count+1, 
+        log: [...exerciseLog.log, {name: exercise.name, quantity: exercise.quantity, date: exercise.date}]});
 
     const context : Context = {
         userData,
+        exerciseLog,
         exerciseData,
         isLoading,
         exerciseTypes,
