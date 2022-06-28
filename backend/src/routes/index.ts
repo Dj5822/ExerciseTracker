@@ -191,6 +191,12 @@ router.get("/users/:_id/stats", async (req, res) => {
         _id: { "date": {$dateToString: { format: "%Y-%m-%d", date: "$date" }}, "exercise": "$name" },
         total: {$sum: "$quantity"},
       }
+    },
+    {
+      $group: {
+        _id: "$_id.date",
+        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
+      }
     }
   ]);
 
@@ -201,7 +207,13 @@ router.get("/users/:_id/stats", async (req, res) => {
     {
       $group: {
         _id: { "date": {$dateToString: { format: "%Y-%m", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
+        total: {$sum: "$quantity"}
+      }
+    },
+    {
+      $group: {
+        _id: "$_id.date",
+        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
       }
     }
   ]);
@@ -213,7 +225,13 @@ router.get("/users/:_id/stats", async (req, res) => {
     {
       $group: {
         _id: { "date": {$dateToString: { format: "%Y", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
+        total: {$sum: "$quantity"}
+      }
+    },
+    {
+      $group: {
+        _id: "$_id.date",
+        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
       }
     }
   ]);
