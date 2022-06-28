@@ -155,126 +155,6 @@ router.get("/users/:_id/logs", async (req, res) => {
   res.status(200).json(output);
 });
 
-router.get("/users/:_id/logs/daily", async (req, res) => {
-  let user;
-  let exercises;
-
-  // Used to find the user.
-  try {
-    user = await User.findById({ _id: req.params._id });
-    if (!user) throw new Error("No user found.");
-  } catch (err) {
-    res.status(404).json({ error: "You need to supply a valid user id." });
-    return;
-  }
-
-  // Execute the query.
-  exercises = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y-%m-%d", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
-      }
-    }
-  ]);
-
-  const output = {
-    username: user.username,
-    count: exercises.length,
-    dailyLog: exercises.map((exercise) => {
-      return {
-        id: exercise._id,
-        total: exercise.total,
-      };
-    }),
-  };
-
-  res.status(200).json(output);
-});
-
-router.get("/users/:_id/logs/monthly", async (req, res) => {
-  let user;
-  let exercises;
-
-  // Used to find the user.
-  try {
-    user = await User.findById({ _id: req.params._id });
-    if (!user) throw new Error("No user found.");
-  } catch (err) {
-    res.status(404).json({ error: "You need to supply a valid user id." });
-    return;
-  }
-
-  // Execute the query.
-  exercises = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y-%m", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
-      }
-    }
-  ]);
-
-  const output = {
-    username: user.username,
-    count: exercises.length,
-    dailyLog: exercises.map((exercise) => {
-      return {
-        id: exercise._id,
-        total: exercise.total,
-      };
-    }),
-  };
-
-  res.status(200).json(output);
-});
-
-router.get("/users/:_id/logs/yearly", async (req, res) => {
-  let user;
-  let exercises;
-
-  // Used to find the user.
-  try {
-    user = await User.findById({ _id: req.params._id });
-    if (!user) throw new Error("No user found.");
-  } catch (err) {
-    res.status(404).json({ error: "You need to supply a valid user id." });
-    return;
-  }
-
-  // Execute the query.
-  exercises = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
-      }
-    }
-  ]);
-
-  const output = {
-    username: user.username,
-    count: exercises.length,
-    dailyLog: exercises.map((exercise) => {
-      return {
-        id: exercise._id,
-        total: exercise.total,
-      };
-    }),
-  };
-
-  res.status(200).json(output);
-});
-
 router.get("/users/:_id/stats", async (req, res) => {
   let user;
   let exercises;
@@ -302,14 +182,53 @@ router.get("/users/:_id/stats", async (req, res) => {
     }
   ]);
 
+  const dailyStats = await Exercise.aggregate([
+    {
+      $match: { userId: req.params._id }
+    },
+    {
+      $group: {
+        _id: { "date": {$dateToString: { format: "%Y-%m-%d", date: "$date" }}, "exercise": "$name" },
+        total: {$sum: "$quantity"},
+      }
+    }
+  ]);
+
+  const monthlyStats = await Exercise.aggregate([
+    {
+      $match: { userId: req.params._id }
+    },
+    {
+      $group: {
+        _id: { "date": {$dateToString: { format: "%Y-%m", date: "$date" }}, "exercise": "$name" },
+        total: {$sum: "$quantity"},
+      }
+    }
+  ]);
+
+  const yearlyStats = await Exercise.aggregate([
+    {
+      $match: { userId: req.params._id }
+    },
+    {
+      $group: {
+        _id: { "date": {$dateToString: { format: "%Y", date: "$date" }}, "exercise": "$name" },
+        total: {$sum: "$quantity"},
+      }
+    }
+  ]);
+
   const output = {
     username: user.username,
     count: exercises.length,
-    dailyLog: exercises.map((exercise) => {
+    daily: dailyStats,
+    monthly: monthlyStats,
+    yearly: yearlyStats,
+    totals: exercises.map((exercise) => {
       return {
         id: exercise._id,
         total: exercise.total,
-        highscore: exercise.highscore,
+        highscore: exercise.highscore
       };
     }),
   };
