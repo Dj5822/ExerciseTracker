@@ -1,26 +1,41 @@
 import { Card, Container, Typography } from "@mui/material";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { useContext } from "react";
+import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
+import axios from "axios";
 
 const Datapage = () => {
-    const { exerciseData } = useContext(AppContext);
+    const {userData} = useContext(AppContext);
+    const [exerciseData, setExerciseData] = useState([]);
+    const [totals, setTotals] = useState([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const data: any = exerciseData.daily.map((item: any) => {
-        let output: any = {
-            date: item._id
+    useEffect(() => {
+        async function fetchData() {
+            setIsLoading(true);
+            const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`);
+            const data: any = newExerciseData.data.daily.map((item: any) => {
+                let output: any = {
+                    date: item._id
+                }
+        
+                for (const exercise of item.exercises) {
+                    output[exercise.name] = exercise.total;
+                }
+        
+                return output;
+            });
+            setExerciseData(data);
+            setTotals(newExerciseData.data.totals);
+            setIsLoading(false);
         }
 
-        for (const exercise of item.exercises) {
-            output[exercise.name] = exercise.total;
-        }
-
-        return output;
-    });
+        fetchData();        
+    }, [userData._id]);
 
     return (<div>
         <Container sx={{display: "flex", flexDirection: "row", mt: 12}}>
-            {exerciseData.totals.map((exercise:any) => (<Card sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
+            {totals.map((exercise:any) => (<Card sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <Typography variant="h5">{exercise.id}</Typography>
                 <Typography variant="h3">{exercise.total}</Typography>
                 <Typography variant="subtitle1">Total</Typography>
@@ -32,7 +47,7 @@ const Datapage = () => {
         <LineChart
             width={1750}
             height={600}
-            data={data}
+            data={exerciseData}
             margin={{
             top: 100,
             right: 0,
