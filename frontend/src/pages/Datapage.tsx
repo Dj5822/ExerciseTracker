@@ -45,7 +45,7 @@ const Datapage = () => {
             
         </Container>
         <LineChart
-            width={1750}
+            width={1600}
             height={600}
             data={exerciseData}
             margin={{
