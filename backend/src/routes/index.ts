@@ -93,7 +93,7 @@ router.post("/users/:_id/exercises", async (req, res) => {
 });
 
 /*
-Used to get the exercise the logs of any user.
+Used to get the exercise logs of any user.
 */
 router.get("/users/:_id/logs", async (req, res) => {
   let user;
