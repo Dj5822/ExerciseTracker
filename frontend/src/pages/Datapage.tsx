@@ -59,10 +59,15 @@ const Datapage = () => {
             {totals.map((exercise:any) => (
             <Card sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <Typography variant="h4">{exercise.id}</Typography>
-                <Typography variant="h3">{exercise.total}</Typography>
-                <Typography variant="subtitle1">Total</Typography>
-                <Typography variant="h3">{exercise.highscore}</Typography>
-                <Typography variant="subtitle1">Highscore</Typography>
+                <Container sx={{m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
+                    <Typography variant="h3" sx={{color: "green"}}>{exercise.total}</Typography>
+                    <Typography variant="subtitle1" sx={{color: "green"}}>Total</Typography>
+                </Container>
+                
+                <Container sx={{m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
+                    <Typography variant="h3" sx={{color: "blue"}}>{exercise.highscore}</Typography>
+                    <Typography variant="subtitle1" sx={{color: "blue"}}>Highscore</Typography>
+                </Container>
             </Card>))} 
         </Container>
     </div>);
