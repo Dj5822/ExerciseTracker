@@ -1,5 +1,5 @@
 import { Card, Container, Typography } from "@mui/material";
-import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
 import axios from "axios";
@@ -44,25 +44,27 @@ const Datapage = () => {
             </Card>))}
             
         </Container>
-        <LineChart
-            width={1600}
-            height={600}
-            data={exerciseData}
-            margin={{
-            top: 100,
-            right: 0,
-            left: 0,
-            bottom: 5,
-            }}
-        >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line connectNulls type="monotone" dataKey="Push ups" stroke="#8884d8" activeDot={{ r: 8 }} />
-            <Line connectNulls type="monotone" dataKey="Pull ups" stroke="#82ca9d" />
-        </LineChart>
+        <Card sx={{width: 1700, height: 600, ml: 4}}>
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                    data={exerciseData}
+                    margin={{
+                    top: 20,
+                    right: 60,
+                    left: 10,
+                    bottom: 30,
+                    }}
+                >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line connectNulls type="monotone" dataKey="Push ups" stroke="#8884d8" activeDot={{ r: 8 }} />
+                    <Line connectNulls type="monotone" dataKey="Pull ups" stroke="#82ca9d" />
+                </LineChart>
+            </ResponsiveContainer>
+        </Card>
     </div>);
 }
 
