@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Exercise Tracker",
+  "name": "Exercise Tracker Application",
   "icons": [
     {
       "src": "favicon.ico",
