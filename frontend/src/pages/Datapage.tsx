@@ -1,5 +1,5 @@
 import { Button, ButtonGroup, Card, Container, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
 import axios from "axios";
@@ -60,7 +60,7 @@ const Datapage = () => {
                 </ToggleButtonGroup>
             </div>
             <ResponsiveContainer width="100%" height="90%">
-                <LineChart
+                <AreaChart
                     data={exerciseData}
                     margin={{
                     top: 20,
@@ -74,9 +74,9 @@ const Datapage = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Line connectNulls type="monotone" dataKey="Push ups" stroke="#8884d8" activeDot={{ r: 8 }} />
-                    <Line connectNulls type="monotone" dataKey="Pull ups" stroke="#82ca9d" />
-                </LineChart>
+                    <Area connectNulls type="monotone" dataKey="Push ups" stroke="#8884d8" fill="#8884d8" activeDot={{ r: 8 }} />
+                    <Area connectNulls type="monotone" dataKey="Pull ups" stroke="#82ca9d" fill="#82ca9d" />
+                </AreaChart>
             </ResponsiveContainer>
         </Card>
         <Container sx={{display: "flex", flexDirection: "column", justifyContent: "space-evenly", mt: 12, width: 300}}>
