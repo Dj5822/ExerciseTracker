@@ -10,8 +10,8 @@ type in the quantity of the exercise you have done. After pressing 'Add', then y
 
 Once you have enough data, track your progress (or your decline), by going to the 'data' page.
 
-![Graph](https://user-images.githubusercontent.com/24401134/176349062-62be8dd8-7e1b-41af-8299-b6ee3250992c.png)
-![Graph](https://user-images.githubusercontent.com/24401134/176349178-0421b75d-986a-48f8-87da-ba9f7ecfc7ee.png)
+![Graph](https://user-images.githubusercontent.com/24401134/176353221-1a8bf1f6-3252-425a-b0db-7015b134f459.png)
+![Graph with decline](https://user-images.githubusercontent.com/24401134/176353225-8b90068a-d3e1-4bcd-8461-204e9b87b85e.png)
 
 Great! Unfortunately, there aren't many features at the moment, but as soon as I can muster up the energy,
 I'll start implement some of the more interesting features. For example, I am going to add a radar chart
