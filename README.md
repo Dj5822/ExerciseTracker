@@ -4,7 +4,7 @@
 Do you feel depressed while looking at your empty Github activity log?
 No worries! Now you can feel even more depressed by looking at your empty exercise log.
 It's easy to use. All you have to do is select either 'Push ups' or 'Pull ups', and then
-type in the quantity of the exercise you have done. After pressing 'Add', then your good to go.
+type in the quantity of the exercise you have done. After pressing 'Add', then you're good to go.
 
 ![recordExercise](https://user-images.githubusercontent.com/24401134/176348739-2ad01569-07b3-4a9c-94e5-efabfd302841.png)
 
