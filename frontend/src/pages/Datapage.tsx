@@ -79,18 +79,18 @@ const Datapage = () => {
                 </AreaChart>
             </ResponsiveContainer>
         </Card>
-        <Container sx={{display: "flex", flexDirection: "column", justifyContent: "space-evenly", mt: 12, width: 300}}>
+        <Container sx={{display: "flex", flexDirection: "column", justifyContent: "start", mt: 10, width: 300}}>
             {totals.map((exercise:any) => (
             <Card sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <Typography variant="h4">{exercise.id}</Typography>
+                <Typography variant="h6">{exercise.id}</Typography>
                 <Container sx={{m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
-                    <Typography variant="h3" sx={{color: "green"}}>{exercise.total}</Typography>
-                    <Typography variant="subtitle1" sx={{color: "green"}}>Total</Typography>
+                    <Typography variant="h3" sx={{color: "#4f8fea"}}>{exercise.total}</Typography>
+                    <Typography variant="subtitle1">TOTAL</Typography>
                 </Container>
                 
                 <Container sx={{m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
-                    <Typography variant="h3" sx={{color: "blue"}}>{exercise.highscore}</Typography>
-                    <Typography variant="subtitle1" sx={{color: "blue"}}>Highscore</Typography>
+                    <Typography variant="h3" sx={{color: "#46acb7"}}>{exercise.highscore}</Typography>
+                    <Typography variant="subtitle1">HIGHSCORE</Typography>
                 </Container>
             </Card>))} 
         </Container>
