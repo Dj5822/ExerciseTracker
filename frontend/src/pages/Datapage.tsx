@@ -1,4 +1,4 @@
-import { Card, Container, Typography } from "@mui/material";
+import { Button, ButtonGroup, Card, Container, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
@@ -8,13 +8,25 @@ const Datapage = () => {
     const {userData} = useContext(AppContext);
     const [exerciseData, setExerciseData] = useState([]);
     const [totals, setTotals] = useState([]);
+    const [dateGroup, setDateGroup] = useState("daily");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchData() {
             setIsLoading(true);
             const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`);
-            const data: any = newExerciseData.data.daily.map((item: any) => {
+            let exerciseArray;
+            if (dateGroup === "daily") {
+                exerciseArray = newExerciseData.data.daily;
+            }
+            else if (dateGroup === "monthly") {
+                exerciseArray = newExerciseData.data.monthly;
+            }
+            else if (dateGroup === "yearly") {
+                exerciseArray = newExerciseData.data.yearly;
+            }
+
+            const data: any = exerciseArray.map((item: any) => {
                 let output: any = {
                     date: item._id
                 }
@@ -31,11 +43,23 @@ const Datapage = () => {
         }
 
         fetchData();        
-    }, [userData._id]);
+    }, [userData._id, dateGroup]);
+
+    const handleSetDateGroup = (event: any, newDateGroup: any) => {
+        setDateGroup(newDateGroup);
+    }
 
     return (<div style={{ display: 'flex', flexDirection: "row", width: "100%"}}>
         <Card sx={{width: "85%", height: "85vh", ml: 4, mt: 12}}>
-            <ResponsiveContainer width="100%" height="100%">
+            <div style={{marginRight: 60, marginTop: 10, display: "flex", flexDirection:"row", justifyContent:"end"}}>
+                <ToggleButtonGroup exclusive onChange={handleSetDateGroup} value={dateGroup}
+                aria-label="outlined primary button group" >
+                    <ToggleButton value="daily">Daily</ToggleButton>
+                    <ToggleButton value="monthly">Monthly</ToggleButton>
+                    <ToggleButton value="yearly">Yearly</ToggleButton>
+                </ToggleButtonGroup>
+            </div>
+            <ResponsiveContainer width="100%" height="90%">
                 <LineChart
                     data={exerciseData}
                     margin={{
