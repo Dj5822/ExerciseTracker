@@ -1,6 +1,6 @@
 import { Exercise } from "../db/schema";
 
-const getExerciseStats = async (id: string, dateFormat: string) => {
+export const getExerciseStats = async (id: string, dateFormat: string) => {
     const result = await Exercise.aggregate([
             {
                 $match: { userId: id }
@@ -34,4 +34,17 @@ const getExerciseStats = async (id: string, dateFormat: string) => {
     return formattedResults;
 }
 
-export default getExerciseStats;
+export const getCumulativeExerciseStats = async (id: string) => {
+    return await Exercise.aggregate([
+        {
+          $match: { userId: id }
+        },
+        {
+          $group: {
+            _id: "$name",
+            total: {$sum: "$quantity"},
+            highscore: {$max: "$quantity"}
+          }
+        }
+      ]);
+}

@@ -4,7 +4,7 @@ import getExerciseDTO from "../dto/exerciseDTO";
 import getLogsDTO from "../dto/logsDTO";
 import getStatsDTO from "../dto/statsDTO";
 import getUserDTO from "../dto/userDTO";
-import getExerciseStats from "../services/getExerciseStats";
+import { getExerciseStats, getCumulativeExerciseStats } from "../services/getExerciseStats";
 
 const router = express.Router();
 
@@ -145,7 +145,6 @@ Gets all the information required for the data page.
 */
 router.get("/users/:_id/stats", async (req, res) => {
   let user;
-  let exercises;
 
   // Used to find the user.
   try {
@@ -154,28 +153,15 @@ router.get("/users/:_id/stats", async (req, res) => {
   } catch (err) {
     res.status(404).json({ error: "You need to supply a valid user id." });
     return;
-  }
-
-  // Execute the query.
-  exercises = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: "$name",
-        total: {$sum: "$quantity"},
-        highscore: {$max: "$quantity"}
-      }
-    }
-  ]);
+  }  
 
   const dailyStats = await getExerciseStats(req.params._id, "%Y-%m-%d");
   const monthlyStats = await getExerciseStats(req.params._id, "%Y-%m");
   const yearlyStats = await getExerciseStats(req.params._id, "%Y");
-  const statsList = [dailyStats, monthlyStats, yearlyStats];
+  const cumulativeStats = await getCumulativeExerciseStats(req.params._id);
+  const statsList = [dailyStats, monthlyStats, yearlyStats, cumulativeStats];
 
-  const statsDTO = getStatsDTO(user, exercises, statsList);
+  const statsDTO = getStatsDTO(user, statsList);
   res.status(200).json(statsDTO);
 });
 
