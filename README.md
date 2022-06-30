@@ -13,7 +13,7 @@ Once you have enough data, track your progress (or your decline), by going to th
 ![Graph](https://user-images.githubusercontent.com/24401134/176359839-5a10034f-1149-4fe0-bb97-bbb2772c9565.png)
 
 Great! Unfortunately, there aren't many features at the moment, but as soon as I can muster up the energy,
-I'll start implement some of the more interesting features. For example, I am going to add a radar chart
+I'll start to implement some of the more interesting features. For example, I am going to add a radar chart
 that displays your physical capabilities in comparison to the average person. That way you can see how
 weak or strong you are compared to most the people that are at your age. And of course, it wouldn't be a
 'modern day' application without those funky animations and transitions so I'll add that too.
