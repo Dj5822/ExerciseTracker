@@ -1,6 +1,9 @@
 import express from "express";
 import { User, Exercise } from "../db/schema";
+import getExerciseDTO from "../dto/exerciseDTO";
+import getLogsDTO from "../dto/logsDTO";
 import getStatsDTO from "../dto/statsDTO";
+import getUserDTO from "../dto/userDTO";
 import getExerciseStats from "../services/getExerciseStats";
 
 const router = express.Router();
@@ -28,10 +31,7 @@ router.post("/users", async (req, res) => {
   }  
 
   // Send response.
-  res.status(201).json({
-    username: user.username,
-    _id: user._id,
-  });
+  res.status(201).json(getUserDTO(user));
 });
 
 /*
@@ -85,13 +85,7 @@ router.post("/users/:_id/exercises", async (req, res) => {
   }
 
   // Send response.
-  res.status(201).json({
-    _id: user._id,
-    userId: user.username,
-    date: exercise.date.toDateString(),
-    quantity: exercise.quantity,
-    name: exercise.name,
-  });
+  res.status(201).json(getExerciseDTO(user, exercise));
 });
 
 /*
@@ -142,19 +136,8 @@ router.get("/users/:_id/logs", async (req, res) => {
     exercises = await Exercise.find(exerciseQueryValues);
   }
 
-  const output = {
-    username: user.username,
-    count: exercises.length,
-    log: exercises.map((exercise) => {
-      return {
-        name: exercise.name,
-        quantity: exercise.quantity,
-        date: exercise.date.toDateString(),
-      };
-    }),
-  };
-
-  res.status(200).json(output);
+  const logsDTO = getLogsDTO(user, exercises);
+  res.status(200).json(logsDTO);
 });
 
 /*
