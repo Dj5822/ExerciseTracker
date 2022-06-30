@@ -1,5 +1,6 @@
 import express from "express";
 import { User, Exercise } from "../db/schema";
+import getExerciseStats from "../services/getExerciseStats";
 
 const router = express.Router();
 
@@ -182,59 +183,11 @@ router.get("/users/:_id/stats", async (req, res) => {
     }
   ]);
 
-  const dailyStats = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y-%m-%d", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"},
-      }
-    },
-    {
-      $group: {
-        _id: "$_id.date",
-        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
-      }
-    }
-  ]).sort({"_id": 1});
+  const dailyStats = await getExerciseStats(req.params._id, "%Y-%m-%d");
 
-  const monthlyStats = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y-%m", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"}
-      }
-    },
-    {
-      $group: {
-        _id: "$_id.date",
-        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
-      }
-    }
-  ]).sort({"_id": 1});
+  const monthlyStats = await getExerciseStats(req.params._id, "%Y-%m");
 
-  const yearlyStats = await Exercise.aggregate([
-    {
-      $match: { userId: req.params._id }
-    },
-    {
-      $group: {
-        _id: { "date": {$dateToString: { format: "%Y", date: "$date" }}, "exercise": "$name" },
-        total: {$sum: "$quantity"}
-      }
-    },
-    {
-      $group: {
-        _id: "$_id.date",
-        exercises: { $push: { name: "$_id.exercise", total: "$total"}}
-      }
-    }
-  ]).sort({"_id": 1});
+  const yearlyStats = await getExerciseStats(req.params._id, "%Y");
 
   
   const dailyResults: any = dailyStats.map((item: any) => {
