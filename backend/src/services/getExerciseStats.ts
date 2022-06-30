@@ -18,8 +18,20 @@ const getExerciseStats = async (id: string, dateFormat: string) => {
                 }
             }
         ]).sort({"_id": 1});
+    
+    const formattedResults: any = result.map((item: any) => {
+        let output: any = {
+            date: item._id
+        }
+    
+        for (const exercise of item.exercises) {
+            output[exercise.name] = exercise.total;
+        }
+    
+        return output;
+    });
 
-    return result;
+    return formattedResults;
 }
 
 export default getExerciseStats;

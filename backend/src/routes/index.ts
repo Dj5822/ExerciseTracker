@@ -189,51 +189,12 @@ router.get("/users/:_id/stats", async (req, res) => {
 
   const yearlyStats = await getExerciseStats(req.params._id, "%Y");
 
-  
-  const dailyResults: any = dailyStats.map((item: any) => {
-      let output: any = {
-          date: item._id
-      }
-
-      for (const exercise of item.exercises) {
-          output[exercise.name] = exercise.total;
-      }
-
-      return output;
-  });
-
-  const monthlyResults: any = monthlyStats.map((item: any) => {
-    let output: any = {
-        date: item._id
-    }
-
-    for (const exercise of item.exercises) {
-        output[exercise.name] = exercise.total;
-    }
-
-    return output;
-  });
-
-  const yearlyResults: any = yearlyStats.map((item: any) => {
-    let output: any = {
-        date: item._id
-    }
-
-    for (const exercise of item.exercises) {
-        output[exercise.name] = exercise.total;
-    }
-
-    return output;
-  });
-
-
-
   const output = {
     username: user.username,
     count: exercises.length,
-    daily: dailyResults,
-    monthly: monthlyResults,
-    yearly: yearlyResults,
+    daily: dailyStats,
+    monthly: monthlyStats,
+    yearly: yearlyStats,
     totals: exercises.map((exercise) => {
       return {
         id: exercise._id,
