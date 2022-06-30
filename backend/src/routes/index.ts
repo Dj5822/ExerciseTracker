@@ -1,5 +1,6 @@
 import express from "express";
 import { User, Exercise } from "../db/schema";
+import getStatsDTO from "../dto/statsDTO";
 import getExerciseStats from "../services/getExerciseStats";
 
 const router = express.Router();
@@ -156,6 +157,9 @@ router.get("/users/:_id/logs", async (req, res) => {
   res.status(200).json(output);
 });
 
+/*
+Gets all the information required for the data page.
+*/
 router.get("/users/:_id/stats", async (req, res) => {
   let user;
   let exercises;
@@ -184,27 +188,12 @@ router.get("/users/:_id/stats", async (req, res) => {
   ]);
 
   const dailyStats = await getExerciseStats(req.params._id, "%Y-%m-%d");
-
   const monthlyStats = await getExerciseStats(req.params._id, "%Y-%m");
-
   const yearlyStats = await getExerciseStats(req.params._id, "%Y");
+  const statsList = [dailyStats, monthlyStats, yearlyStats];
 
-  const output = {
-    username: user.username,
-    count: exercises.length,
-    daily: dailyStats,
-    monthly: monthlyStats,
-    yearly: yearlyStats,
-    totals: exercises.map((exercise) => {
-      return {
-        id: exercise._id,
-        total: exercise.total,
-        highscore: exercise.highscore
-      };
-    }),
-  };
-
-  res.status(200).json(output);
+  const statsDTO = getStatsDTO(user, exercises, statsList);
+  res.status(200).json(statsDTO);
 });
 
 export default router;
