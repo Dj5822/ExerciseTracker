@@ -236,12 +236,51 @@ router.get("/users/:_id/stats", async (req, res) => {
     }
   ]).sort({"_id": 1});
 
+  
+  const dailyResults: any = dailyStats.map((item: any) => {
+      let output: any = {
+          date: item._id
+      }
+
+      for (const exercise of item.exercises) {
+          output[exercise.name] = exercise.total;
+      }
+
+      return output;
+  });
+
+  const monthlyResults: any = monthlyStats.map((item: any) => {
+    let output: any = {
+        date: item._id
+    }
+
+    for (const exercise of item.exercises) {
+        output[exercise.name] = exercise.total;
+    }
+
+    return output;
+  });
+
+  const yearlyResults: any = yearlyStats.map((item: any) => {
+    let output: any = {
+        date: item._id
+    }
+
+    for (const exercise of item.exercises) {
+        output[exercise.name] = exercise.total;
+    }
+
+    return output;
+  });
+
+
+
   const output = {
     username: user.username,
     count: exercises.length,
-    daily: dailyStats,
-    monthly: monthlyStats,
-    yearly: yearlyStats,
+    daily: dailyResults,
+    monthly: monthlyResults,
+    yearly: yearlyResults,
     totals: exercises.map((exercise) => {
       return {
         id: exercise._id,

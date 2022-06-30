@@ -6,7 +6,7 @@ import axios from "axios";
 
 const Datapage = () => {
     const {userData} = useContext(AppContext);
-    const [exerciseData, setExerciseData] = useState([]);
+    const [exerciseData, setExerciseData] = useState<any>([]);
     const [totals, setTotals] = useState([]);
     const [dateGroup, setDateGroup] = useState("daily");
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -15,35 +15,13 @@ const Datapage = () => {
         async function fetchData() {
             setIsLoading(true);
             const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`);
-            let exerciseArray;
-            if (dateGroup === "daily") {
-                exerciseArray = newExerciseData.data.daily;
-            }
-            else if (dateGroup === "monthly") {
-                exerciseArray = newExerciseData.data.monthly;
-            }
-            else if (dateGroup === "yearly") {
-                exerciseArray = newExerciseData.data.yearly;
-            }
-
-            const data: any = exerciseArray.map((item: any) => {
-                let output: any = {
-                    date: item._id
-                }
-        
-                for (const exercise of item.exercises) {
-                    output[exercise.name] = exercise.total;
-                }
-        
-                return output;
-            });
-            setExerciseData(data);
+            setExerciseData(newExerciseData.data);
             setTotals(newExerciseData.data.totals);
             setIsLoading(false);
         }
 
         fetchData();        
-    }, [userData._id, dateGroup]);
+    }, [userData._id]);
 
     const handleSetDateGroup = (event: any, newDateGroup: any) => {
         setDateGroup(newDateGroup);
@@ -61,7 +39,7 @@ const Datapage = () => {
             </div>
             <ResponsiveContainer width="100%" height="90%">
                 <AreaChart
-                    data={exerciseData}
+                    data={exerciseData[dateGroup]}
                     margin={{
                     top: 20,
                     right: 60,
