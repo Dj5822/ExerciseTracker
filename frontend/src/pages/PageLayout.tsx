@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider, IconButton, List, Toolbar, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -7,18 +7,21 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import LightModeIcon from '@mui/icons-material/LightMode';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '../components/AppBar';
 import Drawer from '../components/Drawer';
 import { Outlet } from "react-router-dom";
+import ColorModeContext from '../context/ColorModeContext';
 
 export default function PageLayout() {
+    const colorMode = useContext(ColorModeContext);
+    let navigate = useNavigate();
+
     const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);    
     };
-
-    let navigate = useNavigate();
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -78,6 +81,12 @@ export default function PageLayout() {
                             <BarChartIcon />
                         </ListItemIcon>
                         <ListItemText primary="Data" />
+                    </ListItemButton>
+                    <ListItemButton onClick={colorMode.toggleColorMode}>
+                        <ListItemIcon>
+                            <LightModeIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Light/Dark" />
                     </ListItemButton>
                 </List>
             </Drawer>

@@ -1,5 +1,5 @@
-import { Button, ButtonGroup, Card, Container, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Card, Container, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
+import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
 import axios from "axios";
