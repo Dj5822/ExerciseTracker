@@ -1,3 +1,4 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import { PaletteMode } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React from 'react';
@@ -24,6 +25,16 @@ function App() {
             mode
         }
     }), [mode]);
+
+    const { isLoading, error } = useAuth0();
+
+    if (error) {
+    return <div>Oops... {error.message}</div>;
+    }
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <ColorModeContext.Provider value={colorMode}>

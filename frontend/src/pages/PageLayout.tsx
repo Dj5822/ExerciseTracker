@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Divider, IconButton, List, Toolbar, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, List, Toolbar, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -13,6 +13,7 @@ import AppBar from '../components/AppBar';
 import Drawer from '../components/Drawer';
 import { Outlet } from "react-router-dom";
 import ColorModeContext from '../context/ColorModeContext';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function PageLayout() {
     const colorMode = useContext(ColorModeContext);
@@ -22,6 +23,18 @@ export default function PageLayout() {
     const toggleDrawer = () => {
         setOpen(!open);    
     };
+
+    const {
+        user,
+        isAuthenticated,
+        loginWithRedirect,
+        logout,
+    } = useAuth0();
+
+    const logoutWithRedirect = () =>
+    logout({
+    returnTo: window.location.origin,
+    });
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -52,6 +65,12 @@ export default function PageLayout() {
                 >
                     Exercise Tracker
                 </Typography>
+                {!isAuthenticated &&
+                <Button variant="contained" onClick={() => loginWithRedirect()}>Log in</Button>}
+                {isAuthenticated &&
+                (<div>
+                    <Button variant="contained" onClick={() => logoutWithRedirect()}>Log Out</Button>
+                  </div>)}
                 </Toolbar>
             </AppBar>
 
