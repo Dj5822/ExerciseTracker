@@ -17,10 +17,6 @@ I'll start to implement some of the more interesting features. For example, I am
 that displays your physical capabilities in comparison to the average person. That way you can see how
 weak or strong you are compared to most the people that are at your age. And of course, it wouldn't be a
 'modern day' application without those funky animations and transitions so I'll add that too.
-Also, I might as well add in some motivational quotes in the application because it might help the user
-grow a couple of inches. And I might as well allow the user to set their profile picture to anime characters
-because obviously our target audience are going to be those fat otakus and not those chads that can already pump
-out a million push ups. 
 
 ## How to use
 From the root directory...
