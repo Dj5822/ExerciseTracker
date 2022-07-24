@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Divider, IconButton, List, Toolbar, Typography } from '@mui/material';
+import { useNavigate, NavLink as RouterNavLink  } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Avatar, Box, Button, Divider, IconButton, List, Toolbar, Typography } from '@mui/material';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -67,10 +68,19 @@ export default function PageLayout() {
                 </Typography>
                 {!isAuthenticated &&
                 <Button variant="contained" onClick={() => loginWithRedirect()}>Log in</Button>}
-                {isAuthenticated &&
-                (<div>
-                    <Button variant="contained" onClick={() => logoutWithRedirect()}>Log Out</Button>
-                  </div>)}
+                {isAuthenticated && (
+                    <div style={{ display: "flex", flexDirection: "row"}}>
+                        <Button style={{ display: "flex", flexDirection: "row", gap: "16px"}}>
+                            <Avatar alt="Profile" src={user!.picture} />
+                            Profile
+                        </Button>
+                        <Button variant='contained' onClick={() => logoutWithRedirect()} 
+                        color="error" sx={{marginLeft: "24px"}}>
+                            Log out
+                        </Button>
+                    </div>
+                    
+                )}
                 </Toolbar>
             </AppBar>
 
