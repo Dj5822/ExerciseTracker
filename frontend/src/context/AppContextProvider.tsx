@@ -48,7 +48,7 @@ export const AppContextProvider = ({ children }: Props) => {
                 const newUserData = await axios.get("/api/users");
                 // Select the first user.
                 setUserData(newUserData.data[0]);
-                const newExerciseLog = await axios.get(`/api/users/${userData._id}/logs?limit=5`);
+                const newExerciseLog = await axios.get(`/api/users/${newUserData.data[0]._id}/logs?limit=5`);
                 setExerciseLog(newExerciseLog.data);
             }
             catch (err: any) {
