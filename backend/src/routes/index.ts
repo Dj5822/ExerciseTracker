@@ -4,6 +4,7 @@ import getExerciseDTO from "../dto/exerciseDTO";
 import getLogsDTO from "../dto/logsDTO";
 import getStatsDTO from "../dto/statsDTO";
 import getUserDTO from "../dto/userDTO";
+import checkJwt from "../middleware/checkJwt";
 import { getExerciseStats, getCumulativeExerciseStats } from "../services/getExerciseStats";
 
 const router = express.Router();

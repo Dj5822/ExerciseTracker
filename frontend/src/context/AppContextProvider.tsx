@@ -1,3 +1,4 @@
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from "axios";
 import React, { ReactNode, useEffect, useState } from "react";
 
@@ -38,14 +39,22 @@ export const AppContextProvider = ({ children }: Props) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const exerciseTypes = [{name: "Push ups", unit: ""}, {name: "Pull ups", unit: ""}]
 
+    const { getAccessTokenSilently } = useAuth0();
+
     useEffect(() => {
         async function fetchData() {
             setIsLoading(true);
-            const newUserData = await axios.get("/api/users");
-            // Select the first user.
-            setUserData(newUserData.data[0]);
-            const newExerciseLog = await axios.get(`/api/users/${userData._id}/logs?limit=5`);
-            setExerciseLog(newExerciseLog.data);
+            try {
+                const newUserData = await axios.get("/api/users");
+                // Select the first user.
+                setUserData(newUserData.data[0]);
+                const newExerciseLog = await axios.get(`/api/users/${userData._id}/logs?limit=5`);
+                setExerciseLog(newExerciseLog.data);
+            }
+            catch (err: any) {
+                console.log(err.error);
+            }
+            
             setIsLoading(false);
         }
 

@@ -20,6 +20,7 @@ const providerConfig = {
   domain: config.domain,
   clientId: config.clientId,
   redirectUri: window.location.origin,
+  scope: "read:current_user update:current_user_metadata",
   onRedirectCallback,
 };
 

@@ -3,6 +3,7 @@ import { Area, AreaChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } f
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContextProvider";
 import axios from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Datapage = () => {
     const {userData} = useContext(AppContext);
@@ -11,12 +12,24 @@ const Datapage = () => {
     const [dateGroup, setDateGroup] = useState("daily");
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
+    const { getAccessTokenSilently } = useAuth0();
+    
     useEffect(() => {
         async function fetchData() {
             setIsLoading(true);
-            const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`);
-            setExerciseData(newExerciseData.data);
-            setTotals(newExerciseData.data.totals);
+            try {
+                const token = await getAccessTokenSilently();                
+                const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setExerciseData(newExerciseData.data);
+                setTotals(newExerciseData.data.totals);
+            }
+            catch (err: any) {
+                console.log("There was an error: " + err.error);
+            }
             setIsLoading(false);
         }
 
