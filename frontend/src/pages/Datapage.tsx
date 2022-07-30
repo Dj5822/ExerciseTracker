@@ -10,27 +10,19 @@ const Datapage = () => {
     const [exerciseData, setExerciseData] = useState<any>([]);
     const [totals, setTotals] = useState([]);
     const [dateGroup, setDateGroup] = useState("daily");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const { getAccessTokenSilently } = useAuth0();
     
     useEffect(() => {
         async function fetchData() {
-            setIsLoading(true);
-            try {
-                const token = await getAccessTokenSilently();                
-                const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+            try {           
+                const newExerciseData: any = await axios.get(`/api/users/${userData._id}/stats`);
                 setExerciseData(newExerciseData.data);
                 setTotals(newExerciseData.data.totals);
             }
             catch (err: any) {
                 console.log("There was an error: " + err.error);
             }
-            setIsLoading(false);
         }
 
         fetchData();        
@@ -71,7 +63,8 @@ const Datapage = () => {
         </Card>
         <Container sx={{display: "flex", flexDirection: "column", justifyContent: "start", mt: 10, width: 300}}>
             {totals.map((exercise:any) => (
-            <Card sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
+            <Card key={exercise.id}
+                sx={{p: 2, m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
                 <Typography variant="h6">{exercise.id}</Typography>
                 <Container sx={{m: 2, display: "flex", flexDirection: "column", alignItems: "center"}}>
                     <Typography variant="h3" sx={{color: "#4f8fea"}}>{exercise.total}</Typography>
